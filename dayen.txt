@@ -1,1 +1,4 @@
-Coba Add File
+1, dian, pengirim, 1, 3, hoell
+2, dian, pengirim2, 1, 2, stau
+3, dian, pengirim3, 1, 2, hlohyal a
+4, dian, pengirim4, 1, 6, yoooo yob ias
