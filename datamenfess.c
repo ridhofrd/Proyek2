@@ -2,101 +2,77 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_USERS 100
+
+struct UserStats {
+    char username[100];
+    int messageCount;
+};
+
 int main() {
-    // Buka file
     FILE *file = fopen("DataMenfess.txt", "r");
     if (file == NULL) {
         printf("File tidak dapat dibuka.\n");
         return 1;
     }
-    
-    // Baca dan tampilkan data dari file
-    printf("ID\tFrom\tTo\tMessage\n");
-    printf("---------------------------------\n");
-    int id;
-    char from[100], to[100], message[100], method[100], key[100];
-    while (fscanf(file, "%d %s %s %s %s %[^\n]", &id, from, to, method, key, message) != EOF) {
-        // Tampilkan pesan
-        printf("%d\t%s\t%s\t%s\n", id, from, to, message);
+
+    struct UserStats userStats[MAX_USERS];
+    int i, numUsers = 0;
+
+    // Inisialisasi userStats
+    for (i = 0; i < MAX_USERS; i++) {
+        userStats[i].username[0] = '\0';
+        userStats[i].messageCount = 0;
     }
-    
-    // Tutup file
-    fclose(file);
-    
-    int choice;
-    do {
-        // Meminta input menu dari pengguna
-        printf("\nMenu:\n");
-        printf("1. Dekripsi pesan\n");
-        printf("2. Kembali ke menu utama\n");
-        printf("Pilih menu: ");
-        scanf("%d", &choice);
-        
-        switch(choice) {
-            case 1: {
-                // Meminta input ID dari pengguna
-                printf("\nMasukkan ID: ");
-                int input_id;
-                scanf("%d", &input_id);
-                
-                // Buka file kembali untuk mencari pesan berdasarkan ID yang dimasukkan
-                file = fopen("DataMenfess.txt", "r");
-                if (file == NULL) {
-                    printf("File tidak dapat dibuka.\n");
-                    return 1;
-                }
-                
-                // Cari pesan sesuai ID yang dimasukkan
-                int found = 0;
-                while (fscanf(file, "%d %s %s %s %s %[^\n]", &id, from, to, method, key, message) != EOF) {
-                    if (id == input_id) {
-                        printf("\nPesan dengan ID %d:\n", id);
-                        printf("From: %s\n", from);
-                        printf("To: %s\n", to);
-                        printf("Message: %s\n", message);
-                        
-                        // Meminta input key dari pengguna
-                        printf("Masukkan key: ");
-                        char input_key[100];
-                        scanf("%s", input_key);
-                        
-                        // Membandingkan key yang dimasukkan dengan key yang ada di file
-                        if (strcmp(input_key, key) == 0) {
-                            printf("Key yang dimasukkan benar.\n");
-                        } else {
-                            printf("Key yang dimasukkan salah.\n");
-                            printf("Menu:\n");
-                            printf("1. Kembali ke data menfess\n");
-                            printf("2. Kembali ke menu utama\n");
-                            printf("Pilih menu: ");
-                            int sub_choice;
-                            scanf("%d", &sub_choice);
-                            if (sub_choice == 2) {
-                                printf("Kembali ke menu utama");
-                            }
-                        }
-                        
-                        found = 1;
-                        break;
-                    }
-                }
-                
-                // Jika pesan tidak ditemukan
-                if (!found) {
-                    printf("\nPesan dengan ID %d tidak ditemukan.\n", input_id);
-                }
-                
-                // Tutup file
-                fclose(file);
+
+    int id;
+    char date[100], from[100], to[100], message[100], method[100], key[100];
+
+    // Hitung statistik untuk setiap pengguna
+    while (fscanf(file, "%d %s %s %s %s %s %[^\n]", &id, date, from, to, method, key, message) != EOF) {
+        // Hitung statistik untuk pengguna
+        int userIndex = -1;
+        for (i = 0; i < numUsers; i++) {
+            if (strcmp(userStats[i].username, to) == 0) {
+                userIndex = i;
                 break;
             }
-            case 2:
-                printf("Kembali ke menu utama");
-                break;
-            default:
-                printf("\nMenu yang dimasukkan tidak valid. Silakan coba lagi.\n");
         }
-    } while (choice != 2);
-    
+        if (userIndex == -1) {
+            // Pengguna baru, tambahkan ke statistik
+            strncpy(userStats[numUsers].username, to, sizeof(userStats[numUsers].username) - 1);
+            userStats[numUsers].messageCount = 1;
+            numUsers++;
+        } else {
+            // Pengguna sudah ada, tingkatkan jumlah pesannya
+            userStats[userIndex].messageCount++;
+        }
+    }
+
+    // Cari pengguna dengan penerima pesan terbanyak
+    int maxMessageCount = 0;
+    char maxUser[100];
+    for (i = 0; i < numUsers; i++) {
+        if (userStats[i].messageCount > maxMessageCount) {
+            maxMessageCount = userStats[i].messageCount;
+            strcpy(maxUser, userStats[i].username);
+        }
+    }
+
+    printf("Pengguna dengan penerima pesan terbanyak:\n");
+    printf("Username: %s\n", maxUser);
+    printf("Jumlah Pesan: %d\n\n", maxMessageCount);
+
+    // Kembali ke awal file untuk membaca dan menampilkan pesan-pesan
+    rewind(file);
+
+    // Tampilkan data dari file
+    printf("ID\tDate\t\tFrom\tTo\tMessage\n");
+    printf("--------------------------------------------------\n");
+    while (fscanf(file, "%d %s %s %s %s %s %[^\n]", &id, date, from, to, method, key, message) != EOF) {
+        printf("%d\t%s\t%s\t%s\t%s\n", id, date, from, to, message);
+    }
+
+    fclose(file);
     return 0;
 }
