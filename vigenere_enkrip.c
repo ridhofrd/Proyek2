@@ -2,14 +2,13 @@
 #include <string.h>
 #include <ctype.h>
 
-void remove_spaces(char *str) {
-    int i, j = 0;
+void removeSpaces(char *str) {
+    int i, count = 0;
     for (i = 0; str[i]; i++) {
-        if (str[i] != ' ') {
-            str[j++] = tolower(str[i]); // Mengubah huruf kapital menjadi huruf kecil
-        }
+        if (str[i] != ' ')
+            str[count++] = str[i];
     }
-    str[j] = '\0';
+    str[count] = '\0';
 }
 
 void vigenere_encrypt(const char *plaintext, const char *key, char *encrypted) {
@@ -46,7 +45,7 @@ int main() {
     fgets(key, sizeof(key), stdin);
     key[strcspn(key, "\n")] = 0; // Removing newline character from fgets input
 
-    remove_spaces(key); // Menghapus spasi dan mengubah ke huruf kecil
+    removeSpaces(key); // Menghapus spasi dan mengubah ke huruf kecil
 
     vigenere_encrypt(plaintext, key, encrypted);
 
