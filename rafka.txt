@@ -1,2 +1,7 @@
 Nama: Rafka Imanda Putra
+<<<<<<< HEAD
 NIM: 231511026
+=======
+NIM: 231511026
+Cekc
+>>>>>>> cbc81635799ff74c5de593af73d72f46977222fe

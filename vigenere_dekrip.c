@@ -13,7 +13,11 @@ void removeSpaces(char *str) {
 }
 
 // Fungsi untuk melakukan dekripsi teks menggunakan Vigenere Cipher
+<<<<<<< HEAD
 void decryptVigenere(char *text, const char *key) {
+=======
+void decrypt(char *text, const char *key) {
+>>>>>>> cbc81635799ff74c5de593af73d72f46977222fe
     int textLength = strlen(text);
     int keyLength = strlen(key);
     int i, j;
@@ -30,7 +34,11 @@ void decryptVigenere(char *text, const char *key) {
     }
 }
 
+<<<<<<< HEAD
 int mainVigenere_dekrip() {
+=======
+int main() {
+>>>>>>> cbc81635799ff74c5de593af73d72f46977222fe
     char text[100]; // Asumsikan teks yang dienkripsi tidak lebih dari 100 karakter
     char key[100]; // Asumsikan kunci tidak lebih dari 100 karakter
 
@@ -46,11 +54,18 @@ int mainVigenere_dekrip() {
     removeSpaces(key);
 
     printf("Teks sebelum didekripsi: %s\n", text);
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> cbc81635799ff74c5de593af73d72f46977222fe
     decrypt(text, key);
 
     printf("Teks setelah didekripsi: %s\n", text);
 
     return 0;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> cbc81635799ff74c5de593af73d72f46977222fe

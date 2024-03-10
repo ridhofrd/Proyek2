@@ -33,7 +33,11 @@ void vigenere_encrypt(const char *plaintext, const char *key, char *encrypted) {
     encrypted[i] = '\0';
 }
 
+<<<<<<< HEAD
 int mainVigenere_enkrip() {
+=======
+int main() {
+>>>>>>> cbc81635799ff74c5de593af73d72f46977222fe
     char plaintext[100];
     char key[100];
     char encrypted[100];
@@ -56,4 +60,7 @@ int mainVigenere_enkrip() {
 
     return 0;
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> cbc81635799ff74c5de593af73d72f46977222fe
