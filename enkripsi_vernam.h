@@ -1,4 +1,4 @@
-#ifndef enkripsi_vernam.h
+#ifndef enkripsi_vernam
 void enkripsiVernam(char* plain_text, char* key);
 int mainEnkripsiVernam();
 

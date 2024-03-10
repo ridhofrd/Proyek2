@@ -1,4 +1,4 @@
-#ifndef commons.h
+#ifndef commons
 #define TEXT_MAX 100
 
 void printDivider();

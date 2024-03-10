@@ -2,55 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <conio.h>
 
 #include "modul.h"
 
-#define CHAR_MAX_SIZE 16
-#define NIM_MAX 9
-#define KELAS_MAX 5
+#define CHAR_MAX_SIZE 100
+#define NIM_MAX 100
+#define KELAS_MAX 100
 
-void userAuth(){
-	/**
-		* Untuk login, register, serta pengecekan kredensial akun.
-		* @param: tidak ada.
 
-		* function authMenu untuk menampilkan piilihan pada autentikasi.
-		* prosedur inputCredentials untuk menginput kredensial akun.
-		* function checkCredentials untuk validasi kredensial akun.
-		* prosedur checkUnique untuk mengecek username saat registrasi itu unik.
-		* prosedur checkPasswordStrength untuk validasi tingkat kekuatan password.
-		* prosedur inputDetail untuk menambah informasi NIM dan kelas mahasiswa.
-		* prosedur addMhs untuk menambah hasil registrasi data akun mahasiswa.
-		* prosedur redirectPage untuk mengarahkan user sesuai role ke dashboard jika autentikasi sukses.
-	**/
-
-	/** kamus data **/
-	char username[CHAR_MAX_SIZE], password[CHAR_MAX_SIZE];
-	char NIM[NIM_MAX], kelas[KELAS_MAX];
-	int authRole;
-	int authIsSuccess = 0;
-
-	/** proses **/
-	authRole = authMenu();
-
-	if (authRole == 1 || authRole == 2){
-		inputCredentials(username, password);
-		authIsSuccess = checkCredentials(username, password, authRole);
-
-		if (authRole != 2){
-			redirectPage(authIsSuccess, authRole);
-		} else {
-			checkUnique(authIsSuccess);
-			checkPasswordStrength(password);
-			inputDetail(NIM, kelas);
-			addMhs(username, password, NIM, kelas);
-			userAuth();
-		}
-	} else if (authRole == 3){
-	} else {
-		userAuth();
-	}
-}
 
 int authMenu(){
 	/**
@@ -77,7 +37,7 @@ int authMenu(){
 	return a;
 }
 
-void inputCredentials(char username[CHAR_MAX_SIZE], char password[CHAR_MAX_SIZE]){
+void inputCredentials(char *username[CHAR_MAX_SIZE], char *password[CHAR_MAX_SIZE]){
 	/**
 		* Untuk penginputan kredensial akun admin dan user (mahasiswa).
 		* @param: username, password.
@@ -97,36 +57,42 @@ int checkCredentials(char username[CHAR_MAX_SIZE], char password[CHAR_MAX_SIZE],
 	/**
 		* Untuk pengecekan kredensial akun admin dan user (mahasiswa).
 		* @param: username, password, role.
-		* return: 2 jika autentikasi berhasil, 1 jika password salah, 0 jika password salah, -1 jika username sama.
+		* return: 2 jika autentikasi berhasil, -1 jika username sama.
 	**/
 
 	/** kamus data **/
-	char findUsername[CHAR_MAX_SIZE], findPassword[CHAR_MAX_SIZE];
-	char findNIM[NIM_MAX], findkelas[KELAS_MAX];
+
 	int findId;
 	int status = 0;
+    char findUsername[CHAR_MAX_SIZE] = {'0'}, findPassword[CHAR_MAX_SIZE] = {'0'}, findNIM[NIM_MAX] = {'0'}, findkelas[KELAS_MAX] = {'0'};
 
-	FILE *file;
+	FILE * fileMahasiswa = fopen("mahasiswa.txt", "r");
 
 	/** proses **/
-	if (role == 1){
-		file = fopen("mahasiswa.txt", "r");
-		if(file){
-			while(fscanf(file, "%d %s %s %s %s", &findId, &findUsername, &findPassword, &findNIM, &findkelas)  != EOF) {
+		if(fileMahasiswa != NULL){
+            fscanf(fileMahasiswa, "%d %s %s %s %s", &findId, findUsername, findPassword, findNIM, findkelas);
+            rewind(fileMahasiswa);
+			while(!feof(fileMahasiswa)) {
+                char testDrive[100];
+                fscanf(fileMahasiswa, "%d %s %s %s %s", &findId, findUsername, findPassword, findNIM, findkelas);
+
 				if ((strcmp(findUsername, username) == 0) && (strcmp(findPassword, password) == 0)) {
 					status = 2;
-					return status;
-				} else if ((strcmp(findUsername, username) == 0) && (strcmp(findPassword, password) == 1)) {
-					status = 1;
 				} else if (strcmp(findUsername, username) == 0) {
 					status = -1;
 				}
+
 			}
+			printf("File sudah berhasil terbaca!\n");
+
+			if(feof(fileMahasiswa))
+                return status;
+
+
 		} else {
 			printf("File salah.");
 		}
-		fclose(file);
-	}
+		fclose(fileMahasiswa);
 	return status;
 }
 
@@ -144,7 +110,7 @@ void inputDetail(char NIM[NIM_MAX], char kelas[KELAS_MAX]){
 	scanf("%s", &*kelas);
 }
 
-void checkUnique(int authIsSuccess){
+int checkUnique(int authIsSuccess){
 	/**
 		* Untuk pengecekan nilai unik username saat registrasi.
 		* @param: authIsSuccess. (nilai 0 bermakna username unik.)
@@ -152,17 +118,16 @@ void checkUnique(int authIsSuccess){
 	**/
 
 	/** proses **/
-	printf("%d", authIsSuccess);
 	if (authIsSuccess == 0){
+        return 1;
 	} else {
 		printf("Username sudah terpakai. Coba yang lain.\n");
     	system("pause");
-		system("cls");
-        userAuth();
+		return 0;
 	}
 }
 
-void checkPasswordStrength(char *password) {
+int checkPasswordStrength(char *password) {
 	/**
 		* Untuk pengecekan kekuatan password.
 		* @param: password.
@@ -179,7 +144,7 @@ void checkPasswordStrength(char *password) {
     	printf("Password minimal 8 digit\n");
     	system("pause");
 		system("cls");
-        userAuth();
+		return 0;
     }
 
     while (password[i]){
@@ -196,12 +161,14 @@ void checkPasswordStrength(char *password) {
     }
 
     if (uppercase && lowercase && digit && special_char) {
+        return 1;
     } else {
         printf("Password minimal terdiri dari uppercase, lowercase, angka, dan karakter spesial\n");
     	system("pause");
 		system("cls");
-        userAuth();
+		return 0;
     }
+
 }
 
 void addMhs(char *username, char *password, char *NIM, char *kelas){
@@ -246,18 +213,23 @@ void redirectPage(int authStatusCode, int role){
 	if(authStatusCode == 2){
 		system("cls");
 		if (role == 1){
-			mhsDashboard();
+			mhsMenu();
 		}
+		/*ini harus dihapus*/mhsMenu();
 	} else {
 		if (authStatusCode == 1) {
 			printSeparator("Maaf password yang dimasukkan salah.");
-		} else if (authStatusCode == 0 || authStatusCode == -1){
+		}
+		else if (authStatusCode == 0 || authStatusCode == -1){
 			printSeparator("Maaf kredensial akun tidak valid.");
+			system("cls");
+            /*ini harus dihapus*/mhsMenu();
+
 		}
 		system("pause");
 		system("cls");
 
-		userAuth();
+		//userAuth();
 	}
 }
 

@@ -1,4 +1,4 @@
-#ifndef RSA.h
+#ifndef RSA
 int prime(long int);
 void ce();
 long int cd(long int);

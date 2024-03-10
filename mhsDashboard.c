@@ -2,13 +2,6 @@
 #include<stdlib.h>
 #include"modul.h"
 
-void mhsDashboard(){
-	int pilihanMenu;
-
-	pilihanMenu = mhsMenu();
-	redirectMhsMenu(pilihanMenu);
-}
-
 int mhsMenu(){
 	/** kamus data **/
 	int a;
@@ -29,11 +22,11 @@ int mhsMenu(){
 	return a;
 }
 
-void redirectMhsMenu(int pilihanMenu){
-	/** kamus data **/
+/**void redirectMhsMenu(int pilihanMenu){
+	 kamus data
 	int isAdmin = 0;
 
-	/** proses **/
+	proses
 	switch (pilihanMenu){
 		case 1: {
 			system("cls");
@@ -52,7 +45,6 @@ void redirectMhsMenu(int pilihanMenu){
 		}
 		case 4:{
 			system("cls");
-			userAuth();
 			break;
 		}
 		default:{
@@ -63,6 +55,6 @@ void redirectMhsMenu(int pilihanMenu){
 			break;
 		}
 	}
-}
+}**/
 
 

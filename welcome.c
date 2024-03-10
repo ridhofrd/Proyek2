@@ -6,6 +6,7 @@
 #include <stdbool.h>
 
 
+
 /**void gotoxy(int x, int y) {
     COORD coord;
 
@@ -44,8 +45,8 @@ int pilihanLoginWelcome(){
         do {
             gotoxy(30,2);printf("=================SELAMAT DATANG DI CRYPTFESS=================\n");
                 // display the main menu
-                gotoxy(30,4);printf("[%c]Login\n", (selectedOption == 1) ? 'x' : ' ');
-                gotoxy(30,5);printf("[%c]Registrasi\n", (selectedOption == 2) ? 'x' : ' ');
+                gotoxy(30,4);printf("[%c]Login dan Registrasi\n", (selectedOption == 1) ? 'x' : ' ');
+                gotoxy(30,5);printf("[%c]Tentang\n", (selectedOption == 2) ? 'x' : ' ');
                 gotoxy(30,6);printf("[%c]Exit\n", (selectedOption == 3) ? 'x' : ' ');
 
                 key = getch();
