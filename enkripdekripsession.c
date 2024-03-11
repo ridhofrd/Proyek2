@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include<math.h>
-
+#include<math.h> // punya ridho
+#include <ctype.h> // punya haya
 // Function to read the last used message ID from file
 int getLastMessageId(char filename[]) {
     FILE *file = fopen(filename, "r");
@@ -167,7 +167,62 @@ void decryptRailFence(char encryptedMsg[], int key, char decryptedMsg[]) {
 //    encryptedMsg[i] = '\0';  // Null-terminate the string
 //}
 //
-//
+
+
+// AWAL METHOD HAYA VIGENERE
+void removeSpaces(char *str) {
+    int i, count = 0;
+    for (i = 0; str[i]; i++) {
+        if (str[i] != ' ')
+            str[count++] = str[i];
+    }
+    str[count] = '\0';
+}
+
+void vigenere_encrypt(const char *plaintext, const char *keyhuruf, char *encrypted) {
+    int i, j;
+    int plaintext_length = strlen(plaintext);
+    int key_length = strlen(keyhuruf);
+
+    for (i = 0, j = 0; i < plaintext_length; i++, j++) {
+        if (j == key_length)
+            j = 0;
+
+        if (plaintext[i] >= 'a' && plaintext[i] <= 'z') {
+            encrypted[i] = 'a' + (plaintext[i] - 'a' + keyhuruf[j] - 'a') % 26;
+        } else if (plaintext[i] >= 'A' && plaintext[i] <= 'Z') {
+            encrypted[i] = 'A' + (plaintext[i] - 'A' + keyhuruf[j] - 'a') % 26;
+        } else {
+            encrypted[i] = plaintext[i];
+            j--;
+        }
+    }
+    encrypted[i] = '\0';
+}
+
+void decryptVigenere(const char *encryptedMsg, const char *key, char *decryptedMsg) {
+    int encryptedMsgLength = strlen(encryptedMsg);
+    int keyLength = strlen(key);
+    int i, j;
+
+    for (i = 0, j = 0; i < encryptedMsgLength; ++i) {
+        // Periksa apakah karakter adalah huruf
+        if (isalpha(encryptedMsg[i])) {
+            char base = isupper(encryptedMsg[i]) ? 'A' : 'a';
+            char keyChar = tolower(key[j % keyLength]);
+            // Dekripsi karakter
+            decryptedMsg[i] = (encryptedMsg[i] - base - (keyChar - 'a') + 26) % 26 + base;
+            ++j;
+        } else {
+            // Jika karakter bukan huruf, langsung disalin ke pesan terdekripsi
+            decryptedMsg[i] = encryptedMsg[i];
+        }
+    }
+    decryptedMsg[i] = '\0';  // Null-terminate the string
+}
+
+// AKHIR HAYA VIGENERE
+
 void processUserMessage(char nama_user[]) {
     char nama_pengirimpesan[50];
     char msg[100];
@@ -208,6 +263,12 @@ void processUserMessage(char nama_user[]) {
 // Function to save encrypted message to file
 void saveEncryptedMessageToFile(char nama_user[], char nama_pengirimpesan[], char msg[], int encryptionMethod) {
     char encryptedMsg[100]; // Adjust the size as needed
+    // File handling
+    FILE *file;
+    char filename[100];
+
+    int msgLen = strlen(msg); // Added to get the length of the message
+    char keyhuruf[100]; // var vigenere        
     int keyangka; // var railfence
     long int p, q, flag ; // var RSA
     // Call the appropriate encryption function based on the selected method
@@ -216,20 +277,11 @@ void saveEncryptedMessageToFile(char nama_user[], char nama_pengirimpesan[], cha
 	        printf("Enter the encryption key (berupa angka): ");
 	        scanf("%d", &keyangka);
 	
-	 
-	        char encryptedMsg[100]; // Adjust the size as needed
             // Implement Rainfence Encryption logic
             encryptMsg(msg, keyangka, encryptedMsg);
 
-            // File handling
-            FILE *file;
-            char filename[100];
             sprintf(filename, "%s.txt", nama_user);
-
-            // Generate a unique id_pesan
             int id_pesan = generateUniqueId(filename);
-
-            int msgLen = strlen(msg); // Added to get the length of the message
 
             // Check if the file already exists
             if ((file = fopen(filename, "a")) != NULL) {
@@ -254,7 +306,28 @@ void saveEncryptedMessageToFile(char nama_user[], char nama_pengirimpesan[], cha
             // Implement Vernam Encryption logic
             break;
         case 4:
+            printf("Enter the encryption key (berupa huruf): ");
+	        scanf("%s", &keyhuruf);
+	
             // Implement Vigenere Encryption logic
+            vigenere_encrypt(msg, keyhuruf, encryptedMsg);
+
+            sprintf(filename, "%s.txt", nama_user);
+            int id_pesann = generateUniqueId(filename);
+
+            // Check if the file already exists
+            if ((file = fopen(filename, "a")) != NULL) {
+                fprintf(file, "%d, %s, %s, 4, %s, ", id_pesann, nama_user, nama_pengirimpesan, keyhuruf);
+
+                // Use fwrite to write encryptedMsg as binary data
+                fwrite(encryptedMsg, sizeof(char), msgLen, file);
+                fprintf(file, "\n");
+
+                fclose(file);
+            } else {
+                printf("Error creating or opening file.\n");
+                return;
+            }
             break;
         case 5:
             break;
@@ -272,30 +345,43 @@ void viewDecryptionKeyAndMessage(char nama_user[]) {
     sprintf(filename, "%s.txt", nama_user);
 
     if ((file = fopen(filename, "r")) != NULL) {
-        int id_pesan, key, method;
-        char pengirim[50], encryptedMsg[100];
+        int id_pesan, keyangka, method;
+        char pengirim[50], encryptedMsg[100], key[100];
 
         printf("List of Messages:\n");
 
-        while (fscanf(file, "%d, %*[^,], %[^,], %d, %d, %[^\n]", &id_pesan, pengirim, &method, &key, encryptedMsg) == 5) {
-            printf("ID: %d, Sender: %s\n", id_pesan, pengirim);
-        }
+		while (fscanf(file, "%d, %*[^,], %[^,], %d, %[^,], %[^\n]", &id_pesan, pengirim, &method, key, encryptedMsg) == 5) {
+		    printf("ID: %d, Sender: %s\n", id_pesan, pengirim);
+		}
+
 
         fclose(file);
 
         int chosenId;
         printf("Mau Lihat Pesan Yang Mana? (Masukkan ID Pesan 1/2/3/...): ");
         scanf("%d", &chosenId);
+        char *endptr;
+        long int convertedValue = strtol(key, &endptr, 10);
 
         if ((file = fopen(filename, "r")) != NULL) {
-            while (fscanf(file, "%d, %*[^,], %[^,], %d, %d, %[^\n]", &id_pesan, pengirim, &method, &key, encryptedMsg) == 5) {
+        	int found = 0;
+			while (fscanf(file, "%d, %*[^,], %[^,], %d, %[^,], %[^\n]", &id_pesan, pengirim, &method, key, encryptedMsg) == 5) {
                 if (id_pesan == chosenId) {
+                	found = 1;
                     // Perform decryption based on the chosen method
                     char decryptedMsg[100];
                     switch (method) {
                         case 1:
-                            decryptRailFence(encryptedMsg, key, decryptedMsg);
+        			if (*endptr == '\0' || *endptr == '\n') {
+            			keyangka = convertedValue;
+        			}
+                            decryptRailFence(encryptedMsg, keyangka, decryptedMsg);
                             break;
+                        case 4:
+                        	printf("Encrypted Message: %s\nKey: %s\n", encryptedMsg, key);
+
+                        	decryptVigenere(encryptedMsg, key, decryptedMsg);
+                        	break;
                         // Add other decryption methods as needed
                         // ...
 
@@ -334,7 +420,10 @@ void viewDecryptionKeyAndMessage(char nama_user[]) {
                 }
             }
             fclose(file);
-            printf("Invalid ID pesan.\n");
+		    // Check if the chosenId is not found
+		    if (!found) {
+		        printf("Invalid ID pesan.\n");
+		    }
         } else {
             printf("Error opening file.\n");
         }
