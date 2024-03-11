@@ -1,0 +1,4 @@
+1 dian pengirim 1 3 hoell
+2 dian pengirim2 1 2 stau
+3 dian pengirim3 1 2 hlohyal 
+4 dian pengirim4 1 6 yoooo

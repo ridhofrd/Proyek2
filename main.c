@@ -43,8 +43,12 @@ int main()
                         system("cls");
                         if (authRole == 1){
                             userStatus = mhsMenu();
+                            printf("%d\n", userStatus);
+                            char terminator;
+                            scanf("%c", &terminator);
                             if(userStatus == 1){
-
+                                mainDataMenfess();
+                                scanf("%c", &terminator);
                             }
                             else if(userStatus == 2){
 
@@ -88,6 +92,7 @@ int main()
                         strongPass = checkPasswordStrength(password);
                         if(strongPass == 1){
                             inputDetail(NIM, kelas);
+                            mainCreateFile(username);
                             statusRegister = 1;
                         }
                     }
@@ -98,6 +103,10 @@ int main()
 
                 addMhs(username, password, NIM, kelas);
 
+            }
+            else{
+                logout();
+                return 0;
             }
 
         }

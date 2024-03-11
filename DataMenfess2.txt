@@ -1,0 +1,4 @@
+1, 22/02/2024, John, Sarah, vigenere, key, oajo halt
+2, 22/02/2024, Sarah, John, h, hh, Llg hybmo
+3, 26/02/2024, Alex, Sarah, j, jj, swlx njoggiiv
+

@@ -17,6 +17,8 @@ int mhsMenu(){
 
 	printf("Pilih menu yang diinginkan: ");
 	scanf("%d", &a);
+	char terminator;
+	scanf("%c", &terminator);
 
 	system("cls");
 	return a;

@@ -33,18 +33,88 @@
 		</Compiler>
 		<Unit filename="Logout.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
+		<Unit filename="Logout.h" />
+		<Unit filename="MenuUtama.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="MenuUtama.h" />
+		<Unit filename="RSA.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="RSA.h" />
 		<Unit filename="auth.c">
 			<Option compilerVar="CC" />
-			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
+		<Unit filename="auth.h" />
+		<Unit filename="commons.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="commons.h" />
+		<Unit filename="datamenfess.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="datamenfess.h" />
+		<Unit filename="deskripsi_vernam.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="deskripsi_vernam.h" />
+		<Unit filename="enkripsi_vernam.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="enkripsi_vernam.h" />
+		<Unit filename="gitClone/Proyek2/Logout.h" />
+		<Unit filename="gitClone/Proyek2/MenuUtama.h" />
+		<Unit filename="gitClone/Proyek2/RSA.h" />
+		<Unit filename="gitClone/Proyek2/auth.h" />
+		<Unit filename="gitClone/Proyek2/commons.h" />
+		<Unit filename="gitClone/Proyek2/datamenfess.h" />
+		<Unit filename="gitClone/Proyek2/deskripsi_vernam.h" />
+		<Unit filename="gitClone/Proyek2/enkripsi_vernam.h" />
+		<Unit filename="gitClone/Proyek2/hilldekrip.h" />
+		<Unit filename="gitClone/Proyek2/hillenkrip.h" />
+		<Unit filename="gitClone/Proyek2/mhsDashboard.h" />
+		<Unit filename="gitClone/Proyek2/modul.h" />
+		<Unit filename="gitClone/Proyek2/opsi2.h" />
+		<Unit filename="gitClone/Proyek2/railfence.h" />
+		<Unit filename="gitClone/Proyek2/vigenere_dekrip.h" />
+		<Unit filename="gitClone/Proyek2/vigenere_enkrip.h" />
+		<Unit filename="gitClone/Proyek2/welcome.h" />
+		<Unit filename="hilldekrip.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="hilldekrip.h" />
+		<Unit filename="hillenkrip.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="hillenkrip.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="mhsDashboard.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="mhsDashboard.h" />
+		<Unit filename="opsi2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="opsi2.h" />
+		<Unit filename="railfence.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="railfence.h" />
+		<Unit filename="vigenere_dekrip.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="vigenere_dekrip.h" />
+		<Unit filename="vigenere_enkrip.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="vigenere_enkrip.h" />
 		<Unit filename="welcome.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="welcome.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>
