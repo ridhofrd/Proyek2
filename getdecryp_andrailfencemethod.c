@@ -85,7 +85,11 @@ void processUserMessage(char nama_user[]) {
         printf("Enter the encryption key: ");
         scanf("%d", &key);
 
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> origin/dayen
         char encryptedMsg[100]; // Adjust the size as needed
         encryptMsg(msg, key, encryptedMsg);
 
@@ -238,7 +242,11 @@ void viewDecryptionKeyAndMessage(char nama_user[]) {
     }
 }
 
+<<<<<<< HEAD
 int mainGetdecrypt() {
+=======
+int main() {
+>>>>>>> origin/dayen
     char nama_user[50];
 
     printf("Enter your username (or type 'exit' to quit): ");

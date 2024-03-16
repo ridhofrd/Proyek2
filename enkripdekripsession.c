@@ -23,8 +23,11 @@ int getLastMessageId(char filename[]) {
     return lastId;
 }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/dayen
 // Function to generate a unique ID for each message
 int generateUniqueId(char filename[]) {
     int lastMessageId = getLastMessageId(filename);
@@ -270,7 +273,11 @@ void saveEncryptedMessageToFile(char nama_user[], char nama_pengirimpesan[], cha
     char filename[100];
 
     int msgLen = strlen(msg); // Added to get the length of the message
+<<<<<<< HEAD
     char keyhuruf[100]; // var vigenere
+=======
+    char keyhuruf[100]; // var vigenere        
+>>>>>>> origin/dayen
     int keyangka; // var railfence
     long int p, q, flag ; // var RSA
     // Call the appropriate encryption function based on the selected method
@@ -278,7 +285,11 @@ void saveEncryptedMessageToFile(char nama_user[], char nama_pengirimpesan[], cha
         case 1:
 	        printf("Enter the encryption key (berupa angka): ");
 	        scanf("%d", &keyangka);
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> origin/dayen
             // Implement Rainfence Encryption logic
             encryptMsg(msg, keyangka, encryptedMsg);
 
@@ -310,7 +321,11 @@ void saveEncryptedMessageToFile(char nama_user[], char nama_pengirimpesan[], cha
         case 4:
             printf("Enter the encryption key (berupa huruf): ");
 	        scanf("%s", &keyhuruf);
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> origin/dayen
             // Implement Vigenere Encryption logic
             vigenere_encrypt(msg, keyhuruf, encryptedMsg);
 
@@ -431,6 +446,7 @@ void viewDecryptionKeyAndMessage(char nama_user[]) {
         }
     } else {
         printf("Error opening file.\n");
+<<<<<<< HEAD
         printf("Ini sudah menu dashboard user\n");
         char terminator;
         scanf("%c", terminator);
@@ -442,6 +458,22 @@ int mainEnkripDekripSession(char *user) {
     // Check if the user wants to exit
     char nama_user[50];
     strcpy(nama_user, user);
+=======
+    }
+}
+
+int main() {
+    char nama_user[50];
+
+    printf("Enter your username (or type 'exit' to quit): ");
+    scanf("%s", nama_user);
+
+    // Check if the user wants to exit
+    if (strcmp(nama_user, "exit") == 0) {
+        return 0;
+    }
+
+>>>>>>> origin/dayen
     int choice;
     while (1) {
         printf("\nMain Menu:\n");
