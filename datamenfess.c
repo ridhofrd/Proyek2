@@ -17,7 +17,7 @@ int main() {
     printf("----------------------------------------------------------------------------------------------------\n");
     printf("                                               HOME                                                 \n");
     printf("----------------------------------------------------------------------------------------------------\n");
-	FILE *file = fopen("nematoda.txt", "r");
+	FILE *file = fopen("DataMenfess.txt", "r");
     if (file == NULL) {
         printf("File tidak dapat dibuka.\n");
         return 1;
