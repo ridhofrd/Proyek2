@@ -4,6 +4,10 @@
 #include "decrypt.h"
 
 /****** START METHOD DEKRIPSI RAIL FENCE ******/
+// Procedure untuk mendekripsi pesan menggunakan metode Rail Fence
+// encryptedMsg : parameter input bertype array of char, pesan yang telah dienkripsi
+// key : parameter input bertipe integer, kunci untuk dekripsi Rail Fence
+// decryptedMsg : parameter output bertype array of char, pesan yang telah didekripsi
 void decryptRailFence(char encryptedMsg[], int key, char decryptedMsg[]) {
     int len = strlen(encryptedMsg), i, j;
     char railMatrix[key][len];
@@ -50,6 +54,10 @@ void decryptRailFence(char encryptedMsg[], int key, char decryptedMsg[]) {
 /****** END METHOD DEKRIPSI RAIL FENCE ******/
 
 /****** START METHOD DEKRIPSI VIGENERE ******/
+// Procedure untuk mendekripsi pesan menggunakan metode Vigenere
+// encryptedMsg : parameter input bertipe pointer to const char, pesan yang telah dienkripsi
+// key : parameter input bertipe pointer to const char, kunci untuk dekripsi Vigenere
+// decryptedMsg : parameter output bertipe pointer to char, pesan yang telah didekripsi
 void decryptVigenere(const char *encryptedMsg, const char *key, char *decryptedMsg) {
     int encryptedMsgLength = strlen(encryptedMsg);
     int keyLength = strlen(key);
@@ -73,6 +81,10 @@ void decryptVigenere(const char *encryptedMsg, const char *key, char *decryptedM
 /****** END METHOD DEKRIPSI VIGENERE ******/
 
 /****** START METHOD DEKRIPSI VERNAM ******/
+// Procedure untuk mendekripsi pesan menggunakan metode Vernam
+// cipher_text : parameter input bertipe pointer to char, pesan yang telah dienkripsi
+// key : parameter input bertipe pointer to char, kunci untuk dekripsi Vernam
+// decryptedMsg : parameter output bertipe pointer to char, pesan yang telah didekripsi
 void decryptVernam(char* cipher_text, char* key, char* decryptedMsg) {
 	int i = 0;
     for (i; i < strlen(cipher_text); i++) {
@@ -231,6 +243,8 @@ void decryptMessage(int key[MAX][MAX], int inverse[MAX][MAX], char cipher_text[]
 /****** END METHOD DEKRIPSI HILL CIPHER ******/
 
 /****** START SESSION METHOD DEKRIPSI ******/
+// Procedure untuk menampilkan pesan yang telah didekripsi
+// decryptedMsg : parameter input bertipe pointer to char, pesan yang telah didekripsi
 void displayDecryptedMessage(const char *decryptedMsg) {
     printf("\nINI ISI DEKRIPSI PESAN MENFES ANDA\n");
     printf("=======================================================\n");
@@ -238,6 +252,7 @@ void displayDecryptedMessage(const char *decryptedMsg) {
     printf("=======================================================\n\n");
 }
 
+// Procedure untuk menampilkan daftar menfess dan mendekripsi sesuai dengan methodnya 
 void viewDecryptionKeyAndMessage(char nama_pengirimpesan[]) {
     FILE *file;
     char filename[100];
@@ -255,6 +270,7 @@ void viewDecryptionKeyAndMessage(char nama_pengirimpesan[]) {
 		printf("ID%-4sDate%-21sFrom\n", "", "");
         printf("-------------------------------------------------------\n");
         int totalMessages = 0; // Menyimpan total pesan yang dibaca
+	// Membaca dan menampilkan daftar pesan yang masuk
         while (fscanf(file, "%d, %[^,], %[^,], %[^,], %d, %[^,], %[^\n]", &id_pesan, timestamp, nama_target, nama_pengirimpesan, &method, key, encryptedMsg) == 7) {
             totalMessages++;
           	printf("%-5d %-24s %-17s\n", id_pesan, timestamp, nama_pengirimpesan);
@@ -265,15 +281,17 @@ void viewDecryptionKeyAndMessage(char nama_pengirimpesan[]) {
         int chosenId;
         printf("Mau Lihat Pesan Yang Mana? (Masukkan ID Pesan 1/2/...): ");
         scanf("%d", &chosenId);
-
+	// Membuka kembali file untuk membaca pesan yang dipilih untuk didekripsi
         if ((file = fopen(filename, "r")) != NULL) {
     		int found = 0;
     		char keyForSearch[100]; // Variabel untuk menyimpan key yang akan dikonversi
     		char *endptr;
     		long int keyangka; // Variabel untuk menyimpan hasil konversi key
     		int n = 0; // Variabel untuk menyimpan ukuran matriks
+		// Membaca file untuk mencari pesan yang sesuai dengan ID yang dipilih
     		while (fscanf(file, "%d, %[^,], %[^,], %[^,], %d", &id_pesan, timestamp, nama_target, nama_pengirimpesan, &method) == 5) {
-        		if (method == 2) {
+        		// Jika metode adalah 2 (Hill Cipher) yang memiliki dua kunci
+			if (method == 2) {
 		            // Jika metode adalah 2, maka baca nilai n dan matriks kunci
 		            fscanf(file, ", %d", &n);
 					//	printf("Matrix Size (n): %d\n", n);
@@ -283,9 +301,10 @@ void viewDecryptionKeyAndMessage(char nama_pengirimpesan[]) {
 		            // Jika metode selain 2, baca parameter lainnya
 		            fscanf(file, ", %[^,], %[^\n]", keyForSearch, encryptedMsg);
         		}
+			// Jika ID pesan sesuai dengan yang dipilih
         		if (id_pesan == chosenId) {
             		found = 1;
-		            // Melakukan konversi key
+		            // Melakukan konversi key menjadi angka untuk kebutuhan dekripsi
 		            long int convertedValue = strtol(keyForSearch, &endptr, 10);
 		            // Memeriksa apakah konversi berhasil
 		            if (*endptr == '\0' || *endptr == '\n') {
@@ -295,11 +314,13 @@ void viewDecryptionKeyAndMessage(char nama_pengirimpesan[]) {
 		            char decryptedMsg[100];
 		            int key_matrix_num[MAX][MAX];
 		            switch (method) {
-                	case 1:
+                	case 1: // Rail Fence Cipher
 	                    decryptRailFence(encryptedMsg, keyangka, decryptedMsg);
 	                    break;
-                	case 2:
+                	case 2: // Hill Cipher
+				// Inisialisasi matriks kunci dengan nol
 						memset(decryptedMsg, 0, sizeof(decryptedMsg));
+				// Menghasilkan matriks kunci
 				    	generateKeyMatrix(n, keyForSearch, key_matrix);
 					    // Mengkonversi matriks kunci menjadi angka (0-25)
 					    for (i = 0; i < n; i++) {
@@ -342,10 +363,10 @@ void viewDecryptionKeyAndMessage(char nama_pengirimpesan[]) {
 	                        printf("Matrix cannot be inverted\n");
 	                    }
 	                    break;
-	                case 3:
+	                case 3: // Vernam Cipher
 	                    decryptVernam(encryptedMsg, keyForSearch, decryptedMsg);
 	                    break;
-	                case 4:
+	                case 4: // Vigenere Cipher
 	                    decryptVigenere(encryptedMsg, keyForSearch, decryptedMsg);
 	                    break;
 	                default:
