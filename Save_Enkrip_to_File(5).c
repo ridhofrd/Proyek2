@@ -18,7 +18,7 @@ char timestamp[20];
 int prime(long int);
 void ce();
 long int cd(long int);
-void encrypt();
+char *encrypt();
 void decrypt();
 //end variabel ridho
 
@@ -55,7 +55,7 @@ int readMembersFromFile(Member *members) {
 }
 
 void printMenu() {
-    printf("Mau kirim menfess ke siapa?\n\n");
+    printf("Daftar Menfess\n\n");
 }
 
 void printOptions() {
@@ -78,7 +78,7 @@ int processOption(int jumlahMember) {
             printf("Pilihan tidak valid.\n");
             printf("\nPilihan opsi: ");
         }
-    }   
+    }
     if (option == 1) {
         // Handle option 1: Kirim pesan
 		int targetID;
@@ -128,7 +128,7 @@ void printMembers(Member *members, int numMembers, char *loggedInUsername) {
 void selectMetode(int *selectedOption, char *msg) {
 	printf("\nMasukkan pesan yang ingin disampaikan : ");
 	scanf(" %[^\n]s", msg);
-	
+
     printf("\n========================\n");
     printf("1. Railfence Encryption\n");
     printf("2. Hill Encryption\n");
@@ -136,11 +136,11 @@ void selectMetode(int *selectedOption, char *msg) {
     printf("4. Vigenere Encryption\n");
     printf("5. RSA\n");
     printf("========================\n");
-	
+
 	do {
 	    printf("Pilihan metode enkripsi yang ingin digunakan : ");
 	    scanf("%d", selectedOption);
-	    
+
 	    if (*selectedOption < 1 || *selectedOption > 5) {
             printf("Pilih tidak valid. Silakan masukkan nomor metode enkripsi yang valid.\n");
         }
@@ -208,52 +208,6 @@ void encryptMsg(char msg[], int key, char encryptedMsg[]) {
     // Menampilkan pesan terenkripsi ke layar
     printf("Encrypted Message: %s\n", encryptedMsg);
 }
-
-void decryptRailFence(char encryptedMsg[], int key, char decryptedMsg[]) {
-    int len = strlen(encryptedMsg), i, j;
-    char railMatrix[key][len];
-
-    // Initialize the matrix with null characters
-    for (i = 0; i < key; ++i)
-        for (j = 0; j < len; ++j)
-            railMatrix[i][j] = '\0';
-
-    // Determine the rail positions based on the key
-    int railPos[len];
-    int currentRail = 0;
-    int changeDirection = 0;
-    for (i = 0; i < len; ++i) {
-        railPos[i] = currentRail;
-        if (currentRail == 0 || currentRail == key - 1) {
-            changeDirection = !changeDirection;
-        }
-        currentRail += (changeDirection ? 1 : -1);
-    }
-
-    // Fill the matrix with the encrypted message
-    int k = 0;
-    for (i = 0; i < key; ++i) {
-        for (j = 0; j < len; ++j) {
-            if (railPos[j] == i) {
-                railMatrix[i][j] = encryptedMsg[k++];
-            }
-        }
-    }
-
-    // Read the decrypted message from the matrix
-    k = 0;
-    for (j = 0; j < len; ++j) {
-        for (i = 0; i < key; ++i) {
-            if (railPos[j] == i) {
-                decryptedMsg[k++] = railMatrix[i][j];
-            }
-        }
-    }
-
-    decryptedMsg[len] = '\0';  // Null-terminate the string
-}
-//end dian
-
 //enkrip railfence
 
 
@@ -290,7 +244,7 @@ void vigenere_encrypt(const char *plaintext, const char *key, char *encrypted) {
 //end vigenere
 
 //ini enkrip hill
-int modInverse(int a, int m) {
+int modInverseEnkrip(int a, int m) {
     a = a % m;
     for (int x = 1; x < m; x++) {
         if ((a * x) % m == 1) {
@@ -370,7 +324,7 @@ void multiply_and_convert(int key[MAX_SIZE][MAX_SIZE], int message[MAX_SIZE][1],
 
 int is_valid_key(const char *key, int n) {
     int len = strlen(key);
-    
+
     // Memeriksa panjang key yang sesuai dengan n
     if (n == 2 && len != 4) {
         return 0;
@@ -394,14 +348,14 @@ void enkripsiVernam(char* plain_text, char* key, char *cipher_text) {
     int len = strlen(plain_text);
 //    char cipher_text[len];
 //    memset(cipher_text, '\0', sizeof(cipher_text));
-    
+
     int i = 0;
 
     for (i; i < len; i++) {
         plain_text[i] = tolower(plain_text[i]);
         key[i] = tolower(key[i]);
     }
-	
+
 	if (strlen(plain_text) != strlen(key)) {
         printf("Panjang plain text dan chiper text harus sama\n");
     } else {
@@ -412,7 +366,7 @@ void enkripsiVernam(char* plain_text, char* key, char *cipher_text) {
             char s = ((k1 + k2) % 26) + 'a';
             cipher_text[i] = s;
         }
-        
+
     }
 }
 //end vernam
@@ -467,33 +421,6 @@ long int cd(long int x){
     }
 }
 
-void encrypt(char *msg){
-    long int pt, ct, key = e[0], k, len;
-    printf("ini pesannnn : %s \n",msg);
-    int i = 0;
-    len = strlen(msg);
-    while (i < len)
-    {
-        pt = m[i];
-        pt = pt - 96;
-        k = 1;
-        for (j = 0; j < key; j++)
-        {
-            k = k * pt;
-            k = k % n;
-        }
-        temp[i] = k;
-        ct = k + 96;
-        en[i] = ct;
-        i++;
-    }
-    en[i] = -1;
-    printf("\nTHE ENCRYPTED MESSAGE IS:\n");
-    for (i = 0; en[i] != -1; i++)
-        printf("%c", (char)en[i]);
-}
-
-
 void decrypt(){
     long int pt, ct, key = d[0], k;
         int i;
@@ -539,21 +466,37 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
     int msgLen = strlen(msg); // Added to get the length of the message
     char keyhuruf[100]; // var vigenere
     int keyangka; // var railfence
-    
+
     // Call the appropriate encryption function based on the selected method
     switch (encryptionMethod) {
-        case 1:  //railfence
-	        printf("Enter the encryption key (berupa angka): ");
-	        while(1){
-	        	if (scanf("%d", &keyangka)!=1){
-	        	printf("Input harus berupa angka\n");
-        		while (getchar() != '\n');		// Membersihkan stdin dari karakter yang tidak valid
-        		printf("\nEnter the encryption key (berupa angka): ");
-				} else {
+        case 1:
+            ;  //railfence
+	        int statusInput = 0;
+	        /**
+	        while(statusInput == 0){
+	        	if (scanf("%d", &keyangka)!=1 &&  keyangka < msgLen){
+                    printf("Input harus berupa angka\n");
+                while (getchar() != '\n');		// Membersihkan stdin dari karakter yang tidak valid
+                    printf("\nEnter the encryption key (berupa angka): ");
+				}else {
 					break;
 				}
 			}
-	
+			**/
+
+            while(statusInput == 0){
+                printf("Enter the encryption key (berupa angka) dan tidak boleh lebih dari digit pesan: ");
+
+                int charValid = scanf("%d", &keyangka);
+                statusInput = 1;
+                if(charValid != 1 || keyangka > msgLen){
+                    printf("Input harus berupa angka dan tidak boleh lebih dari digit pesan!\n");
+                    while (getchar() != '\n');		// Membersihkan stdin dari karakter yang tidak valid
+                    statusInput = 0;
+                }
+                while (getchar() != '\n');		// Membersihkan stdin dari karakter yang tidak valid
+            }
+
             // Implement Rainfence Encryption logic
             encryptMsg(msg, keyangka, encryptedMsg);
 
@@ -574,7 +517,7 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
                 printf("Error creating or opening file.\n");
                 return;
             }
-            
+
             // Simpan juga ke file DataMenfess.txt
 		    if ((file = fopen("DataMenfess.txt", "a")) != NULL) {
             	id_pesan = generateUniqueId("DataMenfess.txt");
@@ -582,7 +525,7 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 		        // Use fwrite to write encryptedMsg as binary data
 		        fwrite(encryptedMsg, sizeof(char), msgLen, file);
 		        fprintf(file, "\n");
-		
+
 		        fclose(file);
 		    } else {
 		        printf("Error creating or opening DataMenfess.txt.\n");
@@ -597,7 +540,7 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 //		    char s[MAX_SIZE], cipher_text[MAX_SIZE];  cipher_text (pesan) : msg || s (key) : keyhuruf  || pesan enkripsi : encryptedMsg
 		    printf("Berapa ukuran orde matriks persegi nya (ketik 2 : 2x2 atau 3 : 3x3): ");
 //		    scanf("%d", &n2);
-		    
+
 			while (1) {
 		        if (scanf("%d", &n2)!= 1) {
 		            printf("Input harus berupa angka!\n");
@@ -610,11 +553,11 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 		    		printf("Berapa ukuran orde matriks persegi nya (ketik 2 : 2x2 atau 3 : 3x3): ");
 		        }
 		    }
-		    
+
 			while (1) {
 		        printf("Enter the key: ");
 		        scanf("%s", keyhuruf);
-		        
+
 		        // Validasi key
 		        if (is_valid_key(keyhuruf, n2)) {
 		            break; // Jika key valid, keluar dari loop
@@ -622,18 +565,18 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 		            printf("Invalid key. Mohon pastikan key menggunakan huruf kecil dan panjang key adalah %d.\n", n2*n2);
 		        }
 		    }
-		
+
 		    printf("Key accepted: %s\n", keyhuruf);
-		    
+
 		    fflush(stdin);
-		
+
 		    int key_matrix[MAX_SIZE][MAX_SIZE] = {0};
 		    generate_key(n2, keyhuruf, key_matrix);
-		
+
 			char passcode[100];
 			strcpy(passcode, msg);
 		    char *ptr = passcode;
-			
+
 		    while (*ptr)
 		    {
 		        if (*ptr == ' ')
@@ -641,10 +584,10 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 		        ptr++;
 		    }
 		    printf ("\n passcode: %s\n", passcode);
-			
+
 		    int final_matrix[MAX_SIZE][MAX_SIZE][1], matrix_count;
 		    message_matrix(passcode, n2, final_matrix, &matrix_count);
-		
+
 		    char encryptedMsg[MAX_SIZE] = "";
 		    for (int i = 0; i < matrix_count; i++) {
 		        char sub[MAX_SIZE][1];
@@ -653,10 +596,10 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 		            strncat(encryptedMsg, sub[j], 1);
 		        }
 		    }
-		
+
 		    printf("cipher message: %s\n", encryptedMsg);
-		    
-			
+
+
 			//simpan ke file
 			sprintf(filename, "%s.txt", nama_target);
             id_pesan = generateUniqueId(filename);
@@ -675,36 +618,36 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
                 printf("Error creating or opening file.\n");
                 return;
             }
-            
+
             // Simpan juga ke file DataMenfess.txt
 		    if ((file = fopen("DataMenfess.txt", "a")) != NULL) {
             	id_pesan = generateUniqueId("DataMenfess.txt");
 		        fprintf(file, "%d, %s, %s, %s, 2, %d, %s, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, n2, keyhuruf);
-		
+
 		        // Use fwrite to write encryptedMsg as binary data
 		        fwrite(encryptedMsg, sizeof(char), msgLen, file);
 		        fprintf(file, "\n");
-		
+
 		        fclose(file);
 		    } else {
 		        printf("Error creating or opening DataMenfess.txt.\n");
 		        return;
 		    }
-            
+
 
             printf("Message successfully encrypted and saved to file.\n");
-			
+
             break;
         case 3:  //vernam cipher
         	;
         	//plain_text (pesan) : msg || key : keyhuruf  || pesan enkripsi : encryptedMsg
-            
+
 		    int c;
 			while ((c = getchar()) != '\n' && c != EOF); 		//menghapus buffer
 //		    printf("Masukkan kunci one time pad: ");
 //		    fgets(keyhuruf, sizeof(keyhuruf), stdin);
 //		    keyhuruf[strcspn(keyhuruf, "\n")] = '\0';
-			
+
 			do {		//validasi input
 		        printf("Masukkan kunci one time pad yang panjangnya sama dengan panjang pesan (%lu karakter): ", strlen(msg));
 		        fgets(keyhuruf, sizeof(keyhuruf), stdin);
@@ -716,10 +659,10 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 		            break; // Keluar dari loop jika panjang kunci sama dengan panjang pesan
 		        }
 		    } while (1);
-			
+
 		    enkripsiVernam(msg, keyhuruf,encryptedMsg);
 		    printf("\nHasil enkripsi pesan adalah: %s\n", encryptedMsg);
-		    
+
 		    //simpan ke file
 			sprintf(filename, "%s.txt", nama_target);
             id_pesan = generateUniqueId(filename);
@@ -738,16 +681,16 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
                 printf("Error creating or opening file.\n");
                 return;
             }
-            
+
             // Simpan juga ke file DataMenfess.txt
 		    if ((file = fopen("DataMenfess.txt", "a")) != NULL) {
-            	id_pesan = generateUniqueId("DataMenfess.txt");		        
+            	id_pesan = generateUniqueId("DataMenfess.txt");
 		        fprintf(file, "%d, %s, %s, %s, 3, %s, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, keyhuruf);
-		
+
 		        // Use fwrite to write encryptedMsg as binary data
 		        fwrite(encryptedMsg, sizeof(char), msgLen, file);
 		        fprintf(file, "\n");
-		
+
 		        fclose(file);
 		    } else {
 		        printf("Error creating or opening DataMenfess.txt.\n");
@@ -755,12 +698,12 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 		    }
 
             printf("Message successfully encrypted and saved to file.\n");
-		    
+
             break;
         case 4:  //vigenere
             printf("Enter the encryption key (berupa huruf): ");
 	        scanf("%s", &keyhuruf);
-	
+
             // Implement Vigenere Encryption logic
             vigenere_encrypt(msg, keyhuruf, encryptedMsg);
 
@@ -781,93 +724,173 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
                 printf("Error creating or opening file.\n");
                 return;
             }
-            
+
             // Simpan juga ke file DataMenfess.txt
 		    if ((file = fopen("DataMenfess.txt", "a")) != NULL) {
-            	id_pesan = generateUniqueId("DataMenfess.txt");		        
+            	id_pesan = generateUniqueId("DataMenfess.txt");
 		        fprintf(file, "%d, %s, %s, %s, 4, %s, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, keyhuruf);
-		
+
 		        // Use fwrite to write encryptedMsg as binary data
 		        fwrite(encryptedMsg, sizeof(char), msgLen, file);
 		        fprintf(file, "\n");
-		
+
 		        fclose(file);
 		    } else {
 		        printf("Error creating or opening DataMenfess.txt.\n");
 		        return;
 		    }
-            
+
             printf("Message successfully encrypted and saved to file.\n");
             break;
-        case 5:  //RSA
-        	;
-			printf("ENTER FIRST PRIME NUMBER: ");
-		    scanf("%ld", &p);
-		    flag = prime(p);
-		    int i;
-		    if (flag == 0 || p == 1)
-		    {
-		        printf("WRONG INPUT\n");
-		        exit(1);
-		    }
-		
-		    printf("ENTER ANOTHER PRIME NUMBER: ");
-		    scanf("%ld", &q);
-		    flag = prime(q);
-		    if (flag == 0 || q == 1 || p == q)
-		    {
-		        printf("WRONG INPUT\n");
-		        exit(1);
-		    }
-		
+        case 5:
+            ;  //RSA
+            printf("Silahkan Masukkan 2 Nomor Prima yang tidak lebih dari 17\n");
+            int inputStatus = 0;
+            while(inputStatus == 0){
+                inputStatus = 0;
+                printf("Masukkan Angka Prima Pertama: ");
+                scanf("%ld", &p);
+                flag = prime(p);
+                int i;
+                inputStatus = 1;
+                if (flag == 0 || p == 1 || p > 17)
+                {
+                    printf("Input Tidak Diterima!, ");
+                    printf("Silahkan input kembali\n");
+                    inputStatus = 0;
+                }
+            }
+            inputStatus  = 0;
+            while(inputStatus == 0){
+                printf("Masukkan Angka Prima Kedua: ");
+                scanf("%ld", &q);
+                flag = prime(q);
+                inputStatus = 1;
+                if (flag == 0 || q == 1 || p == q || q > 17)
+                {
+                    printf("Input Tidak Diterima!, ");
+                    printf("Silahkan input kembali\n");
+                    inputStatus = 0;
+                }
+            }
+
+
 //		    printf("ENTER MESSAGE: ");
 //		    scanf(" %[^\n]s", msg);
-		    for (i = 0; i < strlen(msg); i++)
+		    for (int i = 0; i < strlen(msg); i++)
 		        m[i] = msg[i];
-		
+
 		    n = p * q;
 		    t = (p - 1) * (q - 1);
-		
+
 		    ce();
-		
+
 		    printf("\nPOSSIBLE VALUES OF e AND d ARE:\n");
-		    for (i = 0; i < j - 1; i++)
+		    for (int i = 0; i < j - 1; i++)
 		        printf("%ld\t%ld\n", e[i], d[i]);
-		        
-		    encrypt(msg);
-		    decrypt(msg);
-		    
-			break;
+
+            long int pt, ct, key = e[0], k, len;
+            printf("ini pesannnn : %s \n",msg);
+            int i = 0;
+            len = strlen(msg);
+            char RSAEncryptedMsg[100] = "";
+            while (i < len)
+            {
+                pt = m[i];
+                pt = pt - 96;
+                k = 1;
+                for (j = 0; j < key; j++)
+                {
+                    k = k * pt;
+                    k = k % n;
+                }
+                temp[i] = k;
+                ct = k + 96;
+                en[i] = ct;
+                i++;
+            }
+            en[i] = -1;
+            printf("\nTHE ENCRYPTED MESSAGE IS:\n");
+            for (i = 0; en[i] != -1; i++){
+                char bitMessage = (char)en[i];
+                printf("%c", bitMessage);
+                strncat(RSAEncryptedMsg, &bitMessage, 2);
+            }
+            printf("encrytedRSA: %s\n", RSAEncryptedMsg);
+
+                   sprintf(filename, "%s.txt", nama_target);
+                   if ((file = fopen(filename, "a")) != NULL) {
+                        getCurrentTimestamp(timestamp);
+                        id_pesan = generateUniqueId(filename);
+                        fprintf(file, "%d, %s, %s, %s, 5, %d, %d, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, p, q);
+
+                        // Use fwrite to write encryptedMsg as binary data
+                        fwrite(RSAEncryptedMsg, sizeof(char), msgLen, file);
+                        fprintf(file, "\n");
+
+                        fclose(file);
+                    } else {
+                        printf("Error creating or opening file.\n");
+                        return;
+                    }
+
+                    // Simpan juga ke file DataMenfess.txt
+                    if ((file = fopen("DataMenfess.txt", "a")) != NULL) {
+                        getCurrentTimestamp(timestamp);
+                        id_pesan = generateUniqueId("DataMenfess.txt");
+                        fprintf(file, "%d, %s, %s, %s, 5, %d, %d, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, p, q);
+                        // Use fwrite to write encryptedMsg as binary data
+                        fwrite(RSAEncryptedMsg, sizeof(char), msgLen, file);
+                        fprintf(file, "\n");
+
+                        fclose(file);
+                    } else {
+                        printf("Error creating or opening DataMenfess.txt.\n");
+                        return;
+                    }
+
+                    printf("Message successfully encrypted and saved to file.\n");
+
+
+            // Check if the file already exists
+
+            break;
+
         default:
             printf("Pilihan tidak valid\n");
             return;
+
+
+
     }
 }
 
 
-int main() {
-    char username[100] = "Harish99";
+int mainOpsi2(char username[100]) {
 	Member members[MAX_MEMBERS];
     char *usernameArray[MAX_MEMBERS];
     int numMembers = readMembersFromFile(members);
     int targetID;
     int selectedOption;
     char msg[100];
-    
+
     // Menampilkan menu dan daftar pengguna ke layar
     printMenu();
     printMembers(members, numMembers, username);
     printOptions();
-    targetID = processOption(numMembers);			//ambil id target    
+    targetID = processOption(numMembers);
+    if(targetID == 0)
+        return 1;
 	char *targetUsername = getUsernameFromID(targetID, members, numMembers);		//mengambil username berdasar id target
-	    
+
 	selectMetode(&selectedOption, msg);
-    
+
     saveEncryptedMessageToFile(targetUsername, username, msg, selectedOption);
-	
-	char selesai[50];
+
+	char selesai, terminator;
+	scanf("%c", &terminator);
 	printf("\nklik enter untuk lanjut");
-	scanf("%s", selesai);
+	scanf("%c", &selesai);
 
     return 0;
 }

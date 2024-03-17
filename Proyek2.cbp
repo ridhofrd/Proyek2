@@ -39,10 +39,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="MenuUtama.h" />
-		<Unit filename="RSA.c">
+		<Unit filename="RSA.h" />
+		<Unit filename="Save_Enkrip_to_File(5).c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="RSA.h" />
 		<Unit filename="auth.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -55,14 +55,15 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="datamenfess.h" />
+		<Unit filename="decrypt.h" />
 		<Unit filename="deskripsi_vernam.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="deskripsi_vernam.h" />
-		<Unit filename="enkripsi_vernam.c">
+		<Unit filename="enkripsi_vernam.h" />
+		<Unit filename="generateFile.c">
 			<Option compilerVar="CC" />
 		</Unit>
-		<Unit filename="enkripsi_vernam.h" />
 		<Unit filename="gitClone/Proyek2/Logout.h" />
 		<Unit filename="gitClone/Proyek2/MenuUtama.h" />
 		<Unit filename="gitClone/Proyek2/RSA.h" />
@@ -80,9 +81,6 @@
 		<Unit filename="gitClone/Proyek2/vigenere_dekrip.h" />
 		<Unit filename="gitClone/Proyek2/vigenere_enkrip.h" />
 		<Unit filename="gitClone/Proyek2/welcome.h" />
-		<Unit filename="hilldekrip.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="hilldekrip.h" />
 		<Unit filename="hillenkrip.c">
 			<Option compilerVar="CC" />
@@ -91,25 +89,22 @@
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="main_decrypt.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="method_decrypt.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="mhsDashboard.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="mhsDashboard.h" />
-		<Unit filename="opsi2.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="opsi2.h" />
-		<Unit filename="railfence.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="railfence.h" />
-		<Unit filename="vigenere_dekrip.c">
+		<Unit filename="validator.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="vigenere_dekrip.h" />
-		<Unit filename="vigenere_enkrip.c">
-			<Option compilerVar="CC" />
-		</Unit>
 		<Unit filename="vigenere_enkrip.h" />
 		<Unit filename="welcome.c">
 			<Option compilerVar="CC" />

@@ -83,7 +83,7 @@ void decryptVernam(char* cipher_text, char* key, char* decryptedMsg) {
         key[i] = tolower(key[i]);
     }
     char plain_text[strlen(cipher_text)];
-    
+
     i = 0;
     for (i; i < strlen(cipher_text); i++) {
         int k1 = decryptedMsg[i] - 'a';
@@ -238,12 +238,12 @@ void displayDecryptedMessage(const char *decryptedMsg) {
     printf("=======================================================\n\n");
 }
 
-void viewDecryptionKeyAndMessage(char nama_pengirimpesan[]) {
+void viewDecryptionKeyAndMessage(char nama_pengirimpesan[], char username[]) {
     FILE *file;
     char filename[100];
     char timestamp[100];
     char key_matrix[MAX][MAX] = {0};
-    sprintf(filename, "Nematoda-Nematoda.txt");
+    sprintf(filename, username);
     if ((file = fopen(filename, "r")) != NULL) {
         int id_pesan, method, n, i, j;
         char nama_target[50], nama_pengirimpesan[100], encryptedMsg[100], key[100];
@@ -308,22 +308,22 @@ void viewDecryptionKeyAndMessage(char nama_pengirimpesan[]) {
 					        }
 					    }
 						//	printKeyMatrix(key_matrix_num, n);
-						//  printN(n);				
+						//  printN(n);
 					    // Hitung determinan matriks kunci
 					    int det = determinant(key_matrix_num, n);
-						//	printf("Determinant: %d\n", det);	
+						//	printf("Determinant: %d\n", det);
 	                    // Jika determinan tidak nol, lanjutkan proses dekripsi
 	                    if (det != 0) {
 	                        int adj[MAX][MAX];
 	                        adjoint(key_matrix_num, adj, n);
-	
+
 							//	printf("Adjoint Matrix:\n");
 							//	printMatrix(adj, n, n);
-	
+
 	                        // Hitung invers determinan
 	                        int det_inv = modInverse(det, 26);
 							//	printf("Inverse of Determinant: %d\n", det_inv);
-	
+
 	                        // Hitung matriks invers
 	                        int inverse[MAX][MAX];
 	                        for (i = 0; i < n; i++) {
@@ -333,9 +333,9 @@ void viewDecryptionKeyAndMessage(char nama_pengirimpesan[]) {
 	                                    inverse[i][j] += 26;
 	                                }
 	                            }
-	                        }	
+	                        }
 							//	printf("Inverse Matrix:\n");
-							//	printMatrix(inverse, n, n);	
+							//	printMatrix(inverse, n, n);
 	                        // Lakukan dekripsi menggunakan matriks kunci dan matriks invers
 							decryptMessage(key_matrix_num, inverse, encryptedMsg, decryptedMsg, n); // Panggil fungsi decryptMessage
 	                    } else {
@@ -356,7 +356,7 @@ void viewDecryptionKeyAndMessage(char nama_pengirimpesan[]) {
 
 		            // Display the decrypted message
 					displayDecryptedMessage(decryptedMsg);
-		
+
 		            fclose(file);
 		            return;
         		}

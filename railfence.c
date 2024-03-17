@@ -238,7 +238,7 @@ void viewDecryptionKeyAndMessage(char nama_user[]) {
     }
 }
 
-int mainRailFence() {
+int main() {
     char nama_user[50];
 
     printf("Enter your username (or type 'exit' to quit): ");

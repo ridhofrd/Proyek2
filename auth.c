@@ -20,21 +20,50 @@ int authMenu(){
 	**/
 
 	/** kamus data **/
-	int a;
 
-	/** proses **/
-	printSeparator("Autentikasi - Aplikasi Menfess");
 
-	printf("1. Login Mahasiswa\n");
-	printf("2. Register Akun Mahasiswa\n");
-	printf("3. Exit\n\n");
-	printDivider();
+    int key = 1, status = 1;
+    int selectedOption = 1, submenuOption = 0;
 
-	printf("Pilih menu yang diinginkan: ");
-	scanf("%d", &a);
+    while(status == 1)
+    {
+        do {
+            gotoxy(30,9);printf("=================Autentikasi - Aplikasi Menfess=================\n");
+                // display the main menu
+                gotoxy(30,11);printf("[%c]Login Mahasiswa\n", (selectedOption == 1) ? 'x' : ' ');
+                gotoxy(30,12);printf("[%c]Register Akun Mahasiswa\n", (selectedOption == 2) ? 'x' : ' ');
+                gotoxy(30,13);printf("[%c]Exit\n", (selectedOption == 3) ? 'x' : ' ');
+
+                key = getch();
+                // Handle arrow key input for the main menu
+                switch (key) {
+                    case 72:  // Up arrow key
+                        selectedOption = (selectedOption > 1) ? selectedOption - 1 : 3;
+                        system("cls");
+                        break;
+                    case 80:  // Down arrow key
+                        selectedOption = (selectedOption < 3) ? selectedOption + 1 : 1;
+                        system("cls");
+                        break;
+                    case 13:  // Enter key
+                        return selectedOption;
+                        break;
+                    default:
+                        // Ignore other keys
+                        break;
+                }
+            }while (key != 13);  // 13 is the ASCII code for Enter key
+    }
+
+            // Clear the console screen (for Windows) - Moved outside of the submenu loop
+        system("cls");
+
+        if (submenuOption == 0) {
+            printf("Exiting...\n");
+        }
 
 	system("cls");
-	return a;
+	return selectedOption;
 }
 
 void inputCredentials(char *username[CHAR_MAX_SIZE], char *password[CHAR_MAX_SIZE]){
@@ -45,11 +74,13 @@ void inputCredentials(char *username[CHAR_MAX_SIZE], char *password[CHAR_MAX_SIZ
 	**/
 
 	/** proses **/
-	printSeparator("Autentikasi - Aplikasi Menfess");
+	gotoxy(30, 8); printf("===================================================================");
+	gotoxy(30, 9); printf("============= Autentikasi - Aplikasi Menfess ======================");
+	gotoxy(30, 10); printf("===================================================================");
 
-	printf("Masukkan Username : ");
+	gotoxy(30, 12); printf("Masukkan Username : ");
 	scanf("%s", &*username);
-	printf("Masukkan Password : ");
+	gotoxy(30, 14); printf("Masukkan Password : ");
 	scanf("%s", &*password);
 }
 
@@ -83,8 +114,6 @@ int checkCredentials(char username[CHAR_MAX_SIZE], char password[CHAR_MAX_SIZE],
 				}
 
 			}
-			printf("File sudah berhasil terbaca!\n");
-
 			if(feof(fileMahasiswa))
                 return status;
 
@@ -104,9 +133,9 @@ void inputDetail(char NIM[NIM_MAX], char kelas[KELAS_MAX]){
 	**/
 
 	/** proses **/
-	printf("Masukkan NIM : ");
+	gotoxy(30, 16);printf("Masukkan NIM : ");
 	scanf("%s", &*NIM);
-	printf("Masukkan Kelas (Misal: D3-1A) : ");
+	gotoxy(30,18);printf("Masukkan Kelas (Misal: D3-1A) : ");
 	scanf("%s", &*kelas);
 }
 
@@ -121,8 +150,8 @@ int checkUnique(int authIsSuccess){
 	if (authIsSuccess == 0){
         return 1;
 	} else {
-		printf("Username sudah terpakai. Coba yang lain.\n");
-    	system("pause");
+		gotoxy(30, 16); printf("Username sudah terpakai. Coba yang lain.\n");
+    	gotoxy(30, 17);system("pause");
 		return 0;
 	}
 }
@@ -141,8 +170,8 @@ int checkPasswordStrength(char *password) {
 
     /** proses **/
     if (password_length < 8) {
-    	printf("Password minimal 8 digit\n");
-    	system("pause");
+    	gotoxy(30, 16);printf("Password minimal 8 digit\n");
+    	gotoxy(30, 17);system("pause");
 		system("cls");
 		return 0;
     }
@@ -163,8 +192,8 @@ int checkPasswordStrength(char *password) {
     if (uppercase && lowercase && digit && special_char) {
         return 1;
     } else {
-        printf("Password minimal terdiri dari uppercase, lowercase, angka, dan karakter spesial\n");
-    	system("pause");
+        gotoxy(30, 16);printf("Password minimal terdiri dari uppercase, lowercase, angka, dan karakter spesial\n");
+    	gotoxy(30, 17);system("pause");
 		system("cls");
 		return 0;
     }

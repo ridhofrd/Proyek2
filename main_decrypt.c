@@ -7,12 +7,12 @@
 #include "decrypt.h"
 
 /****** START ADD ON MENU DEKRIPSI ******/
-int main() {
+int mainOpsi3(char *username) {
     char nama_user[50];
-    const char *filename = "Nematoda-Nematoda.txt";
+    char filename[100];
     //	  nanti pakai ini untuk mengambil session sesuai dengan nama user
-	//    strcat(filename, username);
-	//    strcat(filename, ".txt"); 
+	strcpy(filename, username);
+	strcat(filename, ".txt");
     int lineCount = countLinesInFile(filename);
     int choice;
     while (1) {
@@ -26,7 +26,7 @@ int main() {
         switch (choice) {
             case 1:
             	clearScreen();
-                viewDecryptionKeyAndMessage(nama_user);
+                viewDecryptionKeyAndMessage(nama_user, filename);
                 break;
             case 2:
             	clearScreen();

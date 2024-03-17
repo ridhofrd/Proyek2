@@ -10,7 +10,7 @@ struct UserStats {
 };
 
 int mainDataMenfess() {
-    FILE *file = fopen("DataMenfess2.txt", "r");
+    FILE *file = fopen("DataMenfess.txt", "r");
     if (file == NULL) {
         printf("File tidak dapat dibuka.\n");
         return 1;
@@ -29,7 +29,7 @@ int mainDataMenfess() {
     char date[100], from[100], to[100], message[100], method[100], key[100];
 
     // Hitung statistik untuk setiap pengguna
-    while (fscanf(file, "%d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &id, date, from, to, method, key, message) != EOF) {
+    while (fscanf(file, "%d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &id, date, to, from, method, key, message) != EOF) {
         // Hitung statistik untuk pengguna
         int userIndex = -1;
         for (i = 0; i < numUsers; i++) {
@@ -67,10 +67,10 @@ int mainDataMenfess() {
     rewind(file);
 
     // Tampilkan data dari file
-    printf("ID\tDate\t\tFrom\tTo\tMessage\n");
+    printf("ID\tDate\t\tTo\tFrom\tMessage\n");
     printf("--------------------------------------------------\n");
-    while (fscanf(file, "%d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &id, date, from, to, method, key, message) != EOF) {
-        printf("%d\t%s\t%s\t%s\t%s\n", id, date, from, to, message);
+    while (fscanf(file, "%d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &id, date, to, from, method, key, message) != EOF) {
+        printf("%d\t%s\t%s\t%s\t%s\n", id, date, to, from, message);
     }
 
     fclose(file);

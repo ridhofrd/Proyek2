@@ -15,6 +15,8 @@
 #include "welcome.h"
 #include "Logout.h"
 #include "datamenfess.h"
+#include "decrypt.h"
+
 #include <conio.h>
 
 
@@ -36,34 +38,42 @@ int main()
             system("cls");
             authRole = authMenu();
             if (authRole == 1){
+                system("cls");
                 int userStatus;
                 inputCredentials(&username, &password);
+                printf("%s", password);
                 authStatusCode = checkCredentials(username, password, authRole);
+
                     if(authStatusCode == 2){
                         system("cls");
+
                         if (authRole == 1){
-                            userStatus = mhsMenu();
-                            printf("%d\n", userStatus);
-                            char terminator;
-                            scanf("%c", &terminator);
-                            if(userStatus == 1){
-                                mainDataMenfess();
-                                scanf("%c", &terminator);
-                            }
-                            else if(userStatus == 2){
-
-                            }
-                            else if(userStatus == 3){
-
-                            }
-                            else
-                            {
-                                logout();
-                                return 0;
+                            int mainMenuStatus = 1;
+                            while(mainMenuStatus == 1){
+                                userStatus = mhsMenu();
+                                char terminator;
+                                if(userStatus == 1){
+                                    system("cls");
+                                    mainDataMenfess();
+                                    scanf("%c", &terminator);
+                                }
+                                else if(userStatus == 2){
+                                    mainMenuStatus = mainOpsi2(username);
+                                    system("cls");
+                                }
+                                else if(userStatus == 3){
+                                    mainOpsi3(username);
+                                }
+                                else
+                                {
+                                    logout();
+                                    return 0;
+                                }
                             }
                         }
                     }
                     else {
+                        system("cls");
                         if (authStatusCode == 1) {
                             printSeparator("Maaf password yang dimasukkan salah.");
                         }
@@ -81,6 +91,7 @@ int main()
             }
             else if(authRole == 2){
                 //statusRegister 0 berarti registrasi belum berhasil
+                system("cls");
                 int statusRegister = 0;
                 while(statusRegister == 0){
                     int uniqueUsername = 0;
@@ -94,14 +105,20 @@ int main()
                             inputDetail(NIM, kelas);
                             mainCreateFile(username);
                             statusRegister = 1;
+                            addMhs(username, password, NIM, kelas);
                         }
                     }
-                    else
+                    else{
+                        gotoxy(30, 16);
                         printf("Maaf username telah digunakan!\n");
-
+                        system("cls");
+                        gotoxy(30, 16);printf("Apakah ingin melanjutkan?(Y/n)");
+                        exitStatus = checkContinue();
+                        printf("%d", exitStatus);
+                        statusRegister = exitStatus == 1 ? 1 : 0;
+                        system("cls");
+                    }
                 }
-
-                addMhs(username, password, NIM, kelas);
 
             }
             else{
