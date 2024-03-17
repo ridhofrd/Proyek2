@@ -4,7 +4,6 @@
 
 int checkContinue(){
     char terminator, status;
-    scanf("%c", &terminator);
     scanf("%c", &status);
     scanf("%c", &terminator);
 

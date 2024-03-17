@@ -230,6 +230,7 @@ void decryptMessage(int key[MAX][MAX], int inverse[MAX][MAX], char cipher_text[]
 }
 /****** END METHOD DEKRIPSI HILL CIPHER ******/
 
+
 /****** START SESSION METHOD DEKRIPSI ******/
 void displayDecryptedMessage(const char *decryptedMsg) {
     printf("\nINI ISI DEKRIPSI PESAN MENFES ANDA\n");

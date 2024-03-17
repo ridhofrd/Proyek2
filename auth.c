@@ -32,7 +32,7 @@ int authMenu(){
                 // display the main menu
                 gotoxy(30,11);printf("[%c]Login Mahasiswa\n", (selectedOption == 1) ? 'x' : ' ');
                 gotoxy(30,12);printf("[%c]Register Akun Mahasiswa\n", (selectedOption == 2) ? 'x' : ' ');
-                gotoxy(30,13);printf("[%c]Exit\n", (selectedOption == 3) ? 'x' : ' ');
+                gotoxy(30,13);printf("[%c]Kembali Ke Menu Awal\n", (selectedOption == 3) ? 'x' : ' ');
 
                 key = getch();
                 // Handle arrow key input for the main menu

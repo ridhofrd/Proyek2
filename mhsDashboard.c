@@ -10,11 +10,11 @@ int mhsMenu(){
     while(status == 1)
     {
         do {
-            gotoxy(30,2);printf("=================Main Menu User=================\n");
+            gotoxy(30,2);printf("=================Menu Utama Pengguna=================\n");
                 // display the main menu
-                gotoxy(30,4);printf("[%c]Lihat Beranda Menfess\n", (selectedOption == 1) ? 'x' : ' ');
+                gotoxy(30,4);printf("[%c]Lihat Beranda Keseluruhan\n", (selectedOption == 1) ? 'x' : ' ');
                 gotoxy(30,5);printf("[%c]Kirim Menfess\n", (selectedOption == 2) ? 'x' : ' ');
-                gotoxy(30,6);printf("[%c]Cek Menfess Masuk\n", (selectedOption == 3) ? 'x' : ' ');
+                gotoxy(30,6);printf("[%c]Lihat Beranda Pengguna\n", (selectedOption == 3) ? 'x' : ' ');
                 gotoxy(30,7);printf("[%c]Logout\n", (selectedOption == 4) ? 'x' : ' ');
 
                 key = getch();

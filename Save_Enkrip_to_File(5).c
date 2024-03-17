@@ -64,23 +64,55 @@ void printOptions() {
     printf("2. Kembali ke menu utama\n");
 }
 
-int processOption(int jumlahMember) {
-    int option = 0;
-	printf("\nPilihan opsi: ");
-    while (1) {
-        if (scanf("%d", &option) != 1) {
-            printf("Input harus berupa angka!\n");
-            while (getchar() != '\n');		// Membersihkan stdin dari karakter yang tidak valid
-            printf("\nPilihan opsi: ");
-        } else if (option == 1 || option == 2) {
-            break; // Keluar dari loop jika input valid
-        } else {
-            printf("Pilihan tidak valid.\n");
-            printf("\nPilihan opsi: ");
-        }
+int processOption(int jumlahMember, Member *members, char username[]) {
+        int keyboard = 1, status = 1;
+    int selectedOption = 1, submenuOption = 0;
+
+    while(status == 1)
+    {
+        do {
+
+                printf("=================Kirim Menfess=================\n");
+                printMembers(members, jumlahMember, username);
+
+                // display the main menu
+                printf("[%c]Kirim Menfess Ke Salah Satu User\n", (selectedOption == 1) ? 'x' : ' ');
+                printf("[%c]Keluar Dari Kirim Menfess\n", (selectedOption == 2) ? 'x' : ' ');
+
+                keyboard = getch();
+                // Handle arrow key input for the main menu
+                switch (keyboard) {
+                    case 72:  // Up arrow key
+                        selectedOption = (selectedOption > 1) ? selectedOption - 1 : 2;
+                        system("cls");
+                        break;
+                    case 80:  // Down arrow key
+                        selectedOption = (selectedOption < 2) ? selectedOption + 1 : 1;
+                        system("cls");
+                        break;
+                    case 13:  // Enter key
+                        status = 0;
+                        break;
+                    default:
+                        // Ignore other keys
+                        break;
+                }
+            }while (keyboard != 13);  // 13 is the ASCII code for Enter key
     }
-    if (option == 1) {
+
+            // Clear the console screen (for Windows) - Moved outside of the submenu loop
+        system("cls");
+
+        if (submenuOption == 0) {
+            printf("Exiting...\n");
+        }
+
+        system("cls");
+
+    if (selectedOption == 1) {
         // Handle option 1: Kirim pesan
+        printMembers(members, jumlahMember, username);
+
 		int targetID;
         printf("\nMasukkan nomor id tujuan yang ingin anda buatkan menfess : ");
 		while(1) {
@@ -101,6 +133,8 @@ int processOption(int jumlahMember) {
         printf("Keluar dari program...\n");
         return 0;
     }
+
+    system("cls");
 }
 
 char *getUsernameFromID(int targetID, Member *members, int numMembers) {
@@ -133,26 +167,59 @@ void printMembers(Member *members, int numMembers, char *loggedInUsername) {
 	printf("\t----------------------------\n");
 }
 
-void selectMetode(int *selectedOption, char *msg) {
-	printf("\nMasukkan pesan yang ingin disampaikan : ");
+void selectMetode(int *selectedOptionR, char *msg) {
+    system("cls");
+	gotoxy(30, 8);printf("Masukkan pesan yang ingin disampaikan : ");
 	scanf(" %[^\n]s", msg);
 
-    printf("\n========================\n");
-    printf("1. Railfence Encryption\n");
-    printf("2. Hill Encryption\n");
-    printf("3. Vernam Encryption\n");
-    printf("4. Vigenere Encryption\n");
-    printf("5. RSA\n");
-    printf("========================\n");
+    int keyboard = 1, status = 1;
+    int selectedOption = 1;
+    int submenuOption = 0;
 
-	do {
-	    printf("Pilihan metode enkripsi yang ingin digunakan : ");
-	    scanf("%d", selectedOption);
+    while(status == 1)
+    {
+        do {
+                gotoxy(30, 10);printf("=================Pilih Metode Enkripsi=================\n");
+                // display the main menu
+                gotoxy(30,11);printf("[%c]Rail Fence\n", (selectedOption == 1) ? 'x' : ' ');
+                gotoxy(30,12);printf("[%c]Hill Encypt\n", (selectedOption == 2) ? 'x' : ' ');
+                gotoxy(30,13);printf("[%c]Vernam Encrpyt\n", (selectedOption == 3) ? 'x' : ' ');
+                gotoxy(30,14);printf("[%c]Vigenere Encrypt\n", (selectedOption == 4) ? 'x' : ' ');
+                gotoxy(30,15);printf("[%c]RSA Asimetry\n", (selectedOption == 5) ? 'x' : ' ');
+                gotoxy(30,16);printf("[%c]Kembali\n", (selectedOption == 6) ? 'x' : ' ');
 
-	    if (*selectedOption < 1 || *selectedOption > 5) {
-            printf("Pilih tidak valid. Silakan masukkan nomor metode enkripsi yang valid.\n");
+                keyboard = getch();
+                // Handle arrow key input for the main menu
+                switch (keyboard) {
+                    case 72:  // Up arrow key
+                        selectedOption = (selectedOption > 1) ? selectedOption - 1 : 6;
+                        system("cls");
+                        break;
+                    case 80:  // Down arrow key
+                        selectedOption = (selectedOption < 6) ? selectedOption + 1 : 1;
+                        system("cls");
+                        break;
+                    case 13:  // Enter key
+                        status = 0;
+                        break;
+                    default:
+                        // Ignore other keys
+                        break;
+                }
+            }while (keyboard != 13);  // 13 is the ASCII code for Enter key
+    }
+
+            // Clear the console screen (for Windows) - Moved outside of the submenu loop
+        system("cls");
+
+        if (submenuOption == 0) {
+            printf("Exiting...\n");
         }
-    } while (*selectedOption < 1 || *selectedOption > 5);
+
+    *selectedOptionR = selectedOption;
+
+	system("cls");
+
 
     printf("\n\n");
 }
@@ -793,12 +860,8 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 
 		    ce();
 
-		    printf("\nPOSSIBLE VALUES OF e AND d ARE:\n");
-		    for (int i = 0; i < j - 1; i++)
-		        printf("%ld\t%ld\n", e[i], d[i]);
 
             long int pt, ct, key = e[0], k, len;
-            printf("ini pesannnn : %s \n",msg);
             int i = 0;
             len = strlen(msg);
             char RSAEncryptedMsg[100] = "";
@@ -818,13 +881,13 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
                 i++;
             }
             en[i] = -1;
-            printf("\nTHE ENCRYPTED MESSAGE IS:\n");
+            printf("\nPesan Setelah di Enkripsi:\n");
             for (i = 0; en[i] != -1; i++){
                 char bitMessage = (char)en[i];
                 printf("%c", bitMessage);
                 strncat(RSAEncryptedMsg, &bitMessage, 2);
             }
-            printf("encrytedRSA: %s\n", RSAEncryptedMsg);
+            printf("%s\n", RSAEncryptedMsg);
 
                    sprintf(filename, "%s.txt", nama_target);
                    if ((file = fopen(filename, "a")) != NULL) {
@@ -881,21 +944,29 @@ int mainOpsi2(char username[100]) {
     int targetID;
     int selectedOption;
     char msg[100];
+    int encryptExitStatus = 0;
 
+    char *targetUsername;
     // Menampilkan menu dan daftar pengguna ke layar
-    printMenu();
-    printMembers(members, numMembers, username);
-    printOptions();
-    targetID = processOption(numMembers);
-    if(targetID == 0)
-        return 1;
-	char *targetUsername = getUsernameFromID(targetID, members, numMembers);		//mengambil username berdasar id target
+    while(encryptExitStatus == 0){
+        printMenu();
+        printMembers(members, numMembers, username);
+        targetID = processOption(numMembers, members, username);
+        if(targetID == 0)
+            return 1;
+        targetUsername = getUsernameFromID(targetID, members, numMembers);		//mengambil username berdasar id target
 
-	selectMetode(&selectedOption, msg);
+        selectMetode(&selectedOption, msg);
+        if(selectedOption == 6)
+            encryptExitStatus = 0;
+        else
+            encryptExitStatus = 1;
+    }
+    char terminator;
 
     saveEncryptedMessageToFile(targetUsername, username, msg, selectedOption);
 
-	char selesai, terminator;
+	char selesai;
 	scanf("%c", &terminator);
 	printf("\nklik enter untuk lanjut");
 	scanf("%c", &selesai);

@@ -20,20 +20,20 @@ void loading(){
 	system("cls");
     system("color F1");
 
-		gotoxy(30,9); printf("              =======================");
-		gotoxy(30,10);printf("               MOHON TUNGGU SEBENTAR");
-		gotoxy(30,12);printf("              =======================");
+		gotoxy(30,9); printf("\t\t\t=======================");
+		gotoxy(30,10);printf("\t\t\t   CRYPT-------FESS    ");
+		gotoxy(30,12);printf("\t\t\t=======================");
 
 		Sleep(500);
-		gotoxy(30,11);printf("                     . ");
+		gotoxy(30,11);printf("\t\t\t+++++                 ");
 		Sleep(500);
-		printf(". ");
+		gotoxy(30, 11); printf("\t\t\t+++++++             ");
 		Sleep(500);
-		printf(". ");
+		gotoxy(30, 11); printf("\t\t\t+++++++++++++       ");
 		Sleep(500);
-		printf(". ");
+		gotoxy(30,11);printf("\t\t\t++++                  ");
 		Sleep(500);
-		printf(". ");
+		gotoxy(30,11);printf("\t\t\t++++++++++++++++++++++");
 }
 
 int pilihanLoginWelcome(){

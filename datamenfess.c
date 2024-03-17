@@ -15,9 +15,6 @@ void searchRecipient(FILE *file);
 void viewStatistics(struct UserStats userStats[], int numUsers);
 
 int mainDataMenfess() {
-    printf("----------------------------------------------------------------------------------------------------\n");
-    printf("                                               HOME                                                 \n");
-    printf("----------------------------------------------------------------------------------------------------\n");
 	FILE *file = fopen("DataMenfess.txt", "r");
     if (file == NULL) {
         printf("File tidak dapat dibuka.\n");
@@ -57,17 +54,51 @@ int mainDataMenfess() {
         }
     }
 
-    int choice;
-    do {
-        printf("Menu:\n");
-        printf("1. View All Menfess\n");
-        printf("2. Search by Recipient Name\n");
-        printf("3. View Statistics\n");
-        printf("4. Exit\n");
-        printf("Pilih opsi: ");
-        scanf("%d", &choice);
-		system("cls");
-        switch (choice) {
+    int keyboard = 1, status = 1;
+    int selectedOption = 1, submenuOption = 0;
+
+    while(status == 1)
+    {
+        do {
+            gotoxy(30,9);printf("=================Beranda Keseluruhan=================\n");
+                // display the main menu
+                gotoxy(30,11);printf("[%c]Lihat Seluruh Menfess\n", (selectedOption == 1) ? 'x' : ' ');
+                gotoxy(30,12);printf("[%c]Cari Berdasarkan Penerima Pesan\n", (selectedOption == 2) ? 'x' : ' ');
+                gotoxy(30,13);printf("[%c]Lihat Statistik\n", (selectedOption == 3) ? 'x' : ' ');
+                gotoxy(30,14);printf("[%c]Keluar Dari Beranda Keseluruhan\n", (selectedOption == 4) ? 'x' : ' ');
+
+                keyboard = getch();
+                // Handle arrow key input for the main menu
+                switch (keyboard) {
+                    case 72:  // Up arrow key
+                        selectedOption = (selectedOption > 1) ? selectedOption - 1 : 4;
+                        system("cls");
+                        break;
+                    case 80:  // Down arrow key
+                        selectedOption = (selectedOption < 4) ? selectedOption + 1 : 1;
+                        system("cls");
+                        break;
+                    case 13:  // Enter key
+                        status = 0;
+                        break;
+                    default:
+                        // Ignore other keys
+                        break;
+                }
+            }while (keyboard != 13);  // 13 is the ASCII code for Enter key
+    }
+
+            // Clear the console screen (for Windows) - Moved outside of the submenu loop
+        system("cls");
+
+        if (submenuOption == 0) {
+            printf("Exiting...\n");
+        }
+
+	system("cls");
+
+
+        switch (selectedOption) {
             case 1:
                 viewAllMenfess(file);
                 break;
@@ -79,46 +110,54 @@ int mainDataMenfess() {
                 break;
             case 4:
                 printf("Terima kasih!\n");
+                return 1;
                 break;
             default:
                 printf("Opsi tidak valid. Silakan pilih opsi lain.\n");
         }
-    } while (choice != 4);
 
     fclose(file);
     return 0;
 }
 
 void viewAllMenfess(FILE *file) {
-    printf("----------------------------------------------------------------------------------------------------\n");
-    printf("                                         ALL MENFESS                                                \n");
-    printf("----------------------------------------------------------------------------------------------------\n");
+    printf("------------------------------------------------------------------------------------------------------\n");
+    printf("                                       DAFTAR SELURUH MENFESS                                         \n");
+    printf("------------------------------------------------------------------------------------------------------\n");
 	rewind(file);
 
     int id;
     char date[100], from[100], to[100], message[100], method[100], key[100];
 
-    printf("ID\tDate\t\t\tTo\t\t\tFrom\t\tMessage\n");
-    printf("----------------------------------------------------------------------------------------------------\n");
+
+	printf("-------------------------------------------------------------------------------------------------------\n");
+	printf("|ID |            Waktu Kirim        |     Untuk      |      Dari      |      Pesan Ter-Enkripsi       |\n");
+	printf("|---|-------------------------------|----------------|----------------|-------------------------------|\n");
+
+
 
     while (fscanf(file, "%d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &id, date, to, from, method, key, message) != EOF) {
         if (strcmp(method, "2") == 0 || strcmp(method, "5") == 0) {
             // Cek jika metode adalah 2 atau 5, maka tampilkan pesan setelah koma
             char *comma_position = strchr(message, ',');
             if (comma_position != NULL) {
-                printf("%d\t%s\t%s\t%s\t%s\n", id, date, to, from, comma_position + 2); // Tampilkan pesan setelah koma
+                printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n",id, date, to, from, comma_position + 2);
             } else {
-                printf("%d\t%s\t%s\t%s\t%s\n", id, date, to, from, message);
+                printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n",id, date, to, from, message);
             }
         } else {
-            printf("%d\t%s\t%s\t%s\t%s\n", id, date, to, from, message);
+                printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n",id, date, to, from, message);
         }
     }
+	printf("-------------------------------------------------------------------------------------------------------\n");
+
+
+    system("pause");
 }
 
 void searchRecipient(FILE *file) {
     printf("----------------------------------------------------------------------------------------------------\n");
-    printf("                                    SEARCH RECEPIENT                                                \n");
+    printf("                                    CARI BERDASARKAN PENERIMA                                       \n");
     printf("----------------------------------------------------------------------------------------------------\n");
 	char recipient[100];
     printf("Masukkan nama penerima yang ingin Anda cari: ");
@@ -130,8 +169,9 @@ void searchRecipient(FILE *file) {
     char date[100], from[100], to[100], message[100], method[100], key[100];
     int found = 0;
 
-    printf("ID\tDate\t\t\tTo\t\t\tFrom\t\tMessage\n");
-    printf("----------------------------------------------------------------------------------------------------\n");
+	printf("-------------------------------------------------------------------------------------------------------\n");
+	printf("|ID |            Waktu Kirim        |     Untuk      |      Dari      |       Pesan Ter-enkripsi      |\n");
+	printf("|---|-------------------------------|----------------|----------------|-------------------------------|\n");
 
     while (fscanf(file, "%d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &id, date, to, from, method, key, message) != EOF) {
         if (strcmp(to, recipient) == 0) {
@@ -139,12 +179,12 @@ void searchRecipient(FILE *file) {
                 // Cek jika metode adalah 2 atau 5, maka tampilkan pesan setelah koma
                 char *comma_position = strchr(message, ',');
                 if (comma_position != NULL) {
-                    printf("%d\t%s\t%s\t%s\t%s\n", id, date, to, from, comma_position + 2); // Tampilkan pesan setelah koma
+                    printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n",id, date, to, from, comma_position + 2);
                 } else {
-                    printf("%d\t%s\t%s\t%s\t%s\n", id, date, to, from, message);
+                    printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n",id, date, to, from, message);
                 }
             } else {
-                printf("%d\t%s\t%s\t%s\t%s\n", id, date, to, from, message);
+                    printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n",id, date, to, from, message);
             }
             found = 1;
         }
@@ -153,11 +193,15 @@ void searchRecipient(FILE *file) {
     if (!found) {
         printf("Tidak ada pesan yang ditemukan untuk penerima tersebut.\n");
     }
+	printf("-------------------------------------------------------------------------------------------------------\n");
+
+    system("pause");
 }
 
 void viewStatistics(struct UserStats userStats[], int numUsers) {
+    gotoxy(0, 8);
     printf("----------------------------------------------------------------------------------------------------\n");
-    printf("                                          STATISTICS                                                \n");
+    printf("                                          STATISTIK                                                 \n");
     printf("----------------------------------------------------------------------------------------------------\n");
 	int i, maxMessageCount = 0;
     char maxUser[100];
@@ -168,7 +212,8 @@ void viewStatistics(struct UserStats userStats[], int numUsers) {
         }
     }
 
-    printf("Pengguna dengan penerima pesan terbanyak:\n");
-    printf("Username: %s\n", maxUser);
-    printf("Jumlah Pesan: %d\n\n", maxMessageCount);
+    printf("\t\t\tPengguna dengan penerima pesan terbanyak:\n");
+    printf("\t\t\tUsername: %s\n", maxUser);
+    printf("\t\t\tJumlah Pesan: %d\n\n", maxMessageCount);
+    system("pause");
 }
