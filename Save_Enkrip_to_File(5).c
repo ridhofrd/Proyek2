@@ -114,6 +114,12 @@ char *getUsernameFromID(int targetID, Member *members, int numMembers) {
 
 void printMembers(Member *members, int numMembers, char *loggedInUsername) {
     int i;
+	printf("\n\n --------------- DAFTAR Nama ---------------\n");
+	
+	printf("\t----------------------------\n");
+	printf("\t| ID |         Nama        |\n");
+	printf("\t|----|---------------------|\n");
+
     for (i = 0; i < numMembers; i++) {
         // Cek apakah username dalam data member sama dengan username yang sedang login
         if (strcmp(members[i].username, loggedInUsername) == 0) {
@@ -121,8 +127,10 @@ void printMembers(Member *members, int numMembers, char *loggedInUsername) {
             continue;
         }
         // Jika tidak sama, cetak nomor indeks dan nama
-        printf("%d. %s\n", members[i].id, members[i].username);
+        
+        printf("\t|%-3d |%-20s |\n", members[i].id, members[i].username);
     }
+	printf("\t----------------------------\n");
 }
 
 void selectMetode(int *selectedOption, char *msg) {
