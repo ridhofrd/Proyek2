@@ -9,31 +9,31 @@
 // key : parameter input bertipe integer, kunci untuk dekripsi Rail Fence
 // decryptedMsg : parameter output bertype array of char, pesan yang telah didekripsi
 void decryptRailFence(char encryptedMsg[], int key, char decryptedMsg[]) {
-    int len = strlen(encryptedMsg), i, j;
-    char railMatrix[key][len];
+    int len = strlen(encryptedMsg), i, j; // mendapatkan panjang pesan terenkripsi
+    char railMatrix[key][len]; // Matriks untuk menyimpan pesan terdekripsi dalam pola Rail Fence.
 
     // Initialize the matrix with null characters
     for (i = 0; i < key; ++i)
         for (j = 0; j < len; ++j)
             railMatrix[i][j] = '\0';
 
-    // Determine the rail positions based on the key
+    // Tentukan posisi rel pada rail berdasarkan kunci
     int railPos[len];
     int currentRail = 0;
     int changeDirection = 0;
     for (i = 0; i < len; ++i) {
         railPos[i] = currentRail;
-        if (currentRail == 0 || currentRail == key - 1) {
+        if (currentRail == 0 || currentRail == key - 1) { //  Memeriksa apakah perlu mengubah arah rail.
             changeDirection = !changeDirection;
         }
-        currentRail += (changeDirection ? 1 : -1);
+        currentRail += (changeDirection ? 1 : -1); // Mengubah posisi rail berdasarkan arah yang ditentukan.
     }
 
     // Fill the matrix with the encrypted message
     int k = 0;
     for (i = 0; i < key; ++i) {
         for (j = 0; j < len; ++j) {
-            if (railPos[j] == i) {
+            if (railPos[j] == i) { // Memeriksa apakah pesan terenkripsi harus dimasukkan ke dalam matriks pada posisi ini.
                 railMatrix[i][j] = encryptedMsg[k++];
             }
         }
