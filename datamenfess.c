@@ -9,8 +9,15 @@ struct UserStats {
     int messageCount;
 };
 
+void viewAllMenfess(FILE *file);
+void searchRecipient(FILE *file);
+void viewStatistics(struct UserStats userStats[], int numUsers);
+
 int main() {
-    FILE *file = fopen("DataMenfess.txt", "r");
+    printf("----------------------------------------------------------------------------------------------------\n");
+    printf("                                               HOME                                                 \n");
+    printf("----------------------------------------------------------------------------------------------------\n");
+	FILE *file = fopen("nematoda.txt", "r");
     if (file == NULL) {
         printf("File tidak dapat dibuka.\n");
         return 1;
@@ -49,8 +56,109 @@ int main() {
         }
     }
 
-    // Cari pengguna dengan penerima pesan terbanyak
-    int maxMessageCount = 0;
+    int choice;
+    do {
+        printf("Menu:\n");
+        printf("1. View All Menfess\n");
+        printf("2. Search by Recipient Name\n");
+        printf("3. View Statistics\n");
+        printf("4. Exit\n");
+        printf("Pilih opsi: ");
+        scanf("%d", &choice);
+		system("cls");
+        switch (choice) {
+            case 1:
+                viewAllMenfess(file);
+                break;
+            case 2:
+                searchRecipient(file);
+                break;
+            case 3:
+                viewStatistics(userStats, numUsers);
+                break;
+            case 4:
+                printf("Terima kasih!\n");
+                break;
+            default:
+                printf("Opsi tidak valid. Silakan pilih opsi lain.\n");
+        }
+    } while (choice != 4);
+
+    fclose(file);
+    return 0;
+}
+
+void viewAllMenfess(FILE *file) {
+    printf("----------------------------------------------------------------------------------------------------\n");
+    printf("                                         ALL MENFESS                                                \n");
+    printf("----------------------------------------------------------------------------------------------------\n");
+	rewind(file);
+
+    int id;
+    char date[100], from[100], to[100], message[100], method[100], key[100];
+
+    printf("ID\tDate\t\t\tFrom\t\t\tTo\t\tMessage\n");
+    printf("----------------------------------------------------------------------------------------------------\n");
+
+    while (fscanf(file, "%d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &id, date, from, to, method, key, message) != EOF) {
+        if (strcmp(method, "2") == 0 || strcmp(method, "5") == 0) {
+            // Cek jika metode adalah 2 atau 5, maka tampilkan pesan setelah koma
+            char *comma_position = strchr(message, ',');
+            if (comma_position != NULL) {
+                printf("%d\t%s\t%s\t%s\t%s\n", id, date, from, to, comma_position + 2); // Tampilkan pesan setelah koma
+            } else {
+                printf("%d\t%s\t%s\t%s\t%s\n", id, date, from, to, message);
+            }
+        } else {
+            printf("%d\t%s\t%s\t%s\t%s\n", id, date, from, to, message);
+        }
+    }
+}
+
+void searchRecipient(FILE *file) {
+    printf("----------------------------------------------------------------------------------------------------\n");
+    printf("                                    SEARCH RECEPIENT                                                \n");
+    printf("----------------------------------------------------------------------------------------------------\n");    
+	char recipient[100];
+    printf("Masukkan nama penerima yang ingin Anda cari: ");
+    scanf("%s", recipient);
+
+    rewind(file);
+
+    int id;
+    char date[100], from[100], to[100], message[100], method[100], key[100];
+    int found = 0;
+
+    printf("ID\tDate\t\t\tFrom\t\t\tTo\t\tMessage\n");
+    printf("----------------------------------------------------------------------------------------------------\n");
+
+    while (fscanf(file, "%d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &id, date, from, to, method, key, message) != EOF) {
+        if (strcmp(to, recipient) == 0) {
+            if (strcmp(method, "2") == 0 || strcmp(method, "5") == 0) {
+                // Cek jika metode adalah 2 atau 5, maka tampilkan pesan setelah koma
+                char *comma_position = strchr(message, ',');
+                if (comma_position != NULL) {
+                    printf("%d\t%s\t%s\t%s\t%s\n", id, date, from, to, comma_position + 2); // Tampilkan pesan setelah koma
+                } else {
+                    printf("%d\t%s\t%s\t%s\t%s\n", id, date, from, to, message);
+                }
+            } else {
+                printf("%d\t%s\t%s\t%s\t%s\n", id, date, from, to, message);
+            }
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        printf("Tidak ada pesan yang ditemukan untuk penerima tersebut.\n");
+    }
+}
+
+void viewStatistics(struct UserStats userStats[], int numUsers) {
+    printf("----------------------------------------------------------------------------------------------------\n");
+    printf("                                          STATISTICS                                                \n");
+    printf("----------------------------------------------------------------------------------------------------\n");
+	int i, maxMessageCount = 0;
     char maxUser[100];
     for (i = 0; i < numUsers; i++) {
         if (userStats[i].messageCount > maxMessageCount) {
@@ -62,17 +170,4 @@ int main() {
     printf("Pengguna dengan penerima pesan terbanyak:\n");
     printf("Username: %s\n", maxUser);
     printf("Jumlah Pesan: %d\n\n", maxMessageCount);
-
-    // Kembali ke awal file untuk membaca dan menampilkan pesan-pesan
-    rewind(file);
-
-    // Tampilkan data dari file
-    printf("ID\tDate\t\tFrom\tTo\tMessage\n");
-    printf("--------------------------------------------------\n");
-    while (fscanf(file, "%d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &id, date, from, to, method, key, message) != EOF) {
-        printf("%d\t%s\t%s\t%s\t%s\n", id, date, from, to, message);
-    }
-
-    fclose(file);
-    return 0;
 }
