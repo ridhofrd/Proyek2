@@ -19,3 +19,6 @@
 19, 17/03/2024 10:04:33, User2, Ridho, 1, 100, TestRailFence
 20, 17/03/2024 10:09:18, User2, Ridho, 1, 6, TestlRia
 21, 17/03/2024 11:21:16, User2, Ridho, 5, 11, 7, Tzù•Yéövz
+22, 17/03/2024 16:38:58, User2, Ridho, 1, 4, TiealsRt
+23, 17/03/2024 16:41:10, User2, Ridho, 1, 4, TneecsFet
+24, 17/03/2024 16:43:06, User2, Ridho, 1, 6, TneecsFetlRia

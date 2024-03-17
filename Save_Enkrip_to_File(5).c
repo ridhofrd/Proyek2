@@ -115,7 +115,7 @@ char *getUsernameFromID(int targetID, Member *members, int numMembers) {
 void printMembers(Member *members, int numMembers, char *loggedInUsername) {
     int i;
 	printf("\n\n --------------- DAFTAR Nama ---------------\n");
-	
+
 	printf("\t----------------------------\n");
 	printf("\t| ID |         Nama        |\n");
 	printf("\t|----|---------------------|\n");
@@ -127,7 +127,7 @@ void printMembers(Member *members, int numMembers, char *loggedInUsername) {
             continue;
         }
         // Jika tidak sama, cetak nomor indeks dan nama
-        
+
         printf("\t|%-3d |%-20s |\n", members[i].id, members[i].username);
     }
 	printf("\t----------------------------\n");
@@ -493,12 +493,12 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 			**/
 
             while(statusInput == 0){
-                printf("Enter the encryption key (berupa angka) dan tidak boleh lebih dari digit pesan: ");
+                printf("Enter the encryption key (berupa angka) 1 < key <= %d: ", msgLen/2);
 
                 int charValid = scanf("%d", &keyangka);
                 statusInput = 1;
-                if(charValid != 1 || keyangka > msgLen){
-                    printf("Input harus berupa angka dan tidak boleh lebih dari digit pesan!\n");
+                if(charValid != 1 || keyangka > (msgLen/2)){
+                    printf("Input harus berupa angka dan 1 < input <= %d\n", msgLen/2);
                     while (getchar() != '\n');		// Membersihkan stdin dari karakter yang tidak valid
                     statusInput = 0;
                 }

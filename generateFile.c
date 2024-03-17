@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <conio.h>
 
-void mainCreateFile(char *username){
-    strcat(username,".txt");
-    FILE *newFile = fopen(username, "w");
+void mainCreateFile(char username[]){
+    char usernameCF[100];
+    strcpy(usernameCF, username);
+    strcat(usernameCF,".txt");
+    FILE *newFile = fopen(usernameCF, "w");
 }

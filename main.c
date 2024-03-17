@@ -56,6 +56,7 @@ int main()
                                     system("cls");
                                     mainDataMenfess();
                                     scanf("%c", &terminator);
+                                    system("cls");
                                 }
                                 else if(userStatus == 2){
                                     mainMenuStatus = mainOpsi2(username);
