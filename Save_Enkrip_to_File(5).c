@@ -5,9 +5,8 @@
 #include <ctype.h>	//haya
 #include<math.h>	//ridho
 #include <time.h>
+#include "MuhammadHarish.h"
 
-#define MAX_SIZE 100
-#define MAX_MEMBERS 100
 
 //variabel ridho
 //long int p, q, n, t, flag, e[100], d[100], temp[100], j, m[100], en[100], i;
@@ -23,13 +22,6 @@ void decrypt();
 //end variabel ridho
 
 // Definisikan struktur data untuk menyimpan informasi pengguna
-typedef struct {
-    int id;
-    char username[50];
-    char password[50];
-    char nim[20];
-    char kelas[10];
-} Member;
 
 // Fungsi untuk membaca data member dari file
 int readMembersFromFile(Member *members) {
@@ -496,7 +488,7 @@ long int cd(long int x){
     }
 }
 
-void decrypt(){
+void decryptRSA(){
     long int pt, ct, key = d[0], k;
         int i;
 		i = 0;

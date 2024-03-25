@@ -2,13 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "HayaQonita.h"
 
 #define MAX_USERS 100
-
-struct UserStats {
-    char username[100];
-    int messageCount;
-};
 
 void viewAllMenfess(FILE *file);
 void searchRecipient(FILE *file);
@@ -118,7 +114,7 @@ int mainDataMenfess() {
 
     fclose(file);
     return 0;
-}
+};
 
 void viewAllMenfess(FILE *file) {
     printf("------------------------------------------------------------------------------------------------------\n");
@@ -153,7 +149,7 @@ void viewAllMenfess(FILE *file) {
 
 
     system("pause");
-}
+};
 
 void searchRecipient(FILE *file) {
     printf("----------------------------------------------------------------------------------------------------\n");

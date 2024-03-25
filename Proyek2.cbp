@@ -31,6 +31,8 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="AnnisaDian.h" />
+		<Unit filename="HayaQonita.h" />
 		<Unit filename="Logout.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -39,10 +41,14 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="MenuUtama.h" />
+		<Unit filename="MuhammadHarish.h" />
+		<Unit filename="MuhammadRidhoF.h" />
 		<Unit filename="RSA.h" />
+		<Unit filename="RafkaImanda.h" />
 		<Unit filename="Save_Enkrip_to_File(5).c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="Unknown.h" />
 		<Unit filename="auth.c">
 			<Option compilerVar="CC" />
 		</Unit>

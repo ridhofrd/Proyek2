@@ -70,9 +70,10 @@ int mainOpsi3(char *username) {
                     printf("Pilihan tidak valid. Silakan coba lagi.\n\n");
             }
         printf("Apakah anda ingin melihat pesan yang lain?(Y\\n)");
+        char terminator;
+        scanf("%c", &terminator);
         statusExit = checkContinue();
     }
-    system("pause");
     system("cls");
     return 0;
 }

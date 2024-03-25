@@ -1,23 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "RSA.h"
-#include "vigenere_dekrip.h"
-#include "vigenere_enkrip.h"
-#include "hilldekrip.h"
-#include "hillenkrip.h"
-#include "opsi2.h"
-#include "auth.h"
-#include "commons.h"
-#include "deskripsi_vernam.h"
-#include "enkripsi_vernam.h"
-#include "mhsDashboard.h"
-#include "modul.h"
-#include "welcome.h"
-#include "Logout.h"
-#include "datamenfess.h"
-#include "decrypt.h"
-
 #include <conio.h>
+#include "AnnisaDian.h"
+#include "HayaQonita.h"
+#include "MuhammadHarish.h"
+#include "MuhammadRidhoF.h"
+#include "RafkaImanda.h"
 
 
 int main()
