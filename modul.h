@@ -17,6 +17,19 @@ typedef struct{
 	char kelas[KELAS_MAX];
 }db_mahasiswa[N_MAX];
 
+struct Node {
+    char data;
+    int key;
+    struct Node* left;
+    struct Node* right;
+};
+
+Node* newNode(char data, int key);
+Node* insert(Node* node, char data, int key);
+char* inorder(struct Node* temp);
+void chiper(char* password, int len);
+char* encryptPassword(char *password);
+
 
 // definisi fungsional: commons/helpers
 void printSeparator(char title[TEXT_MAX]);
