@@ -5,6 +5,7 @@
 #include <conio.h>
 
 #include "modul.h"
+#include "RafkaImanda.h"
 
 #define CHAR_MAX_SIZE 100
 #define NIM_MAX 100
@@ -262,3 +263,43 @@ void redirectPage(int authStatusCode, int role){
 	}
 }
 
+// Bikin Tree
+Node* newNode(char data, int key) {
+    Node* node = (Node*)malloc(sizeof(Node));
+    node->data = data;
+    node->key = key;
+    node->left = node->right = NULL;
+    return node;
+}
+
+// Node diinsert secara level order
+Node* insert(Node* node, char data, int key) {
+    if (node == NULL) {
+        return newNode(data, key);
+    }
+
+	// Pakai standard library dari C
+    std::queue<Node*> q;
+    q.push(node);
+
+    while (!q.empty()) {
+        Node* current = q.front();
+        q.pop();
+
+        if (current->left == NULL) {
+            current->left = newNode(data, key);
+            break;
+        } else {
+            q.push(current->left);
+        }
+
+        if (current->right == NULL) {
+            current->right = newNode(data, key);
+            break;
+        } else {
+            q.push(current->right);
+        }
+    }
+
+    return node;
+}
