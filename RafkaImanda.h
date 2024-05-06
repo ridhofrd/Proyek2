@@ -28,4 +28,5 @@ int mhsMenu();
 void redirectMhsMenu(int pilihanMenu);
 void enkripsiVernam(char* plain_text, char* key, char *cipher_text);
 void decryptVernam(char* cipher_text, char* key, char* decryptedMsg);
+char* encryptPassword(char *password);
 #endif // RafkaImanda
