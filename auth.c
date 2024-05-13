@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <conio.h>
+#include <queue>
 
 #include "modul.h"
 #include "RafkaImanda.h"
@@ -263,8 +264,12 @@ void redirectPage(int authStatusCode, int role){
 	}
 }
 
-// Bikin Tree
 Node* newNode(char data, int key) {
+	/**
+		* Untuk membuat Tree baru dari inputan password yang dimasukkan oleh user.
+		* @param: data, key
+		* return: Node dengan subvar yang terisi
+	**/
     Node* node = (Node*)malloc(sizeof(Node));
     node->data = data;
     node->key = key;
@@ -272,13 +277,16 @@ Node* newNode(char data, int key) {
     return node;
 }
 
-// Node diinsert secara level order
 Node* insert(Node* node, char data, int key) {
+	/**
+		* Untuk melakukan insert Tree dengan level order dari setiap karakter password yang dimasukkan oleh user.
+		* @param: node, data, key
+		* return: Tree yang masing-masing node berisi karakter dari password user dengan urutan level order
+	**/
     if (node == NULL) {
         return newNode(data, key);
     }
 
-	// Pakai standard library dari C
     std::queue<Node*> q;
     q.push(node);
 
@@ -300,6 +308,24 @@ Node* insert(Node* node, char data, int key) {
             q.push(current->right);
         }
     }
-
     return node;
+}
+
+char* inorder(struct Node* temp) {
+	/**
+		* Untuk melakukan pengacakan (shuffle) tree dengan InOrder dari Tree yang sudah diinsert sebelumnya secara level order
+		* @param: node
+		* return: Array of char berupa password user yang urutan karakternya sudah teracak
+	**/
+    static char str[1024];
+    static int i = 0;
+
+    if (temp == NULL)
+        return "";
+
+    inorder(temp->left);
+    str[i++] = temp->data;
+    inorder(temp->right);
+
+    return str;
 }
