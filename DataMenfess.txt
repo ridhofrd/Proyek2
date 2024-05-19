@@ -1,0 +1,10 @@
+0, 1, 22/02/2024, John, Sarah,  vigenere, key, oajo halt 
+0, 2, 22/02/2024, Sarah, John, h, hh, Llg hybmo 
+0, 3, 26/02/2024, Alex, Sarah, j, jj, swlx njogiiv 
+0, 4, 26/02/2024, Alex, Sarah, j, jj, swlx njogiiv 
+0, 5, 06/05/2024, Haya, Sarah, vigenere, keykey, halolasad
+0, 6, 06/05/2024, Haya, Dafni, railfence, keykey, halow
+0, 7, 13/05/2024, Haya, Dafni, railfence, keykey, ppasaa
+0, 8, 13/05/2024, Haya, Dafni, 5, keykey, key2, ppasaa
+0, 9, 13/05/2024, Haya, Dafni, 2, keykey, key2, pake metode 2
+
