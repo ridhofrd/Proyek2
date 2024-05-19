@@ -238,8 +238,8 @@ void displayDecryptedMessage(const char *decryptedMsg) {
     printf("=======================================================\n\n");
 }
 
-void viewDecryptionKeyAndMessage(char nama_pengirimpesan[], Message *head, const char *filename) {
-    Message *current = head;
+void viewDecryptionKeyAndMessage(char nama_pengirimpesan[], MessageNode *head, const char *filename) {
+    MessageNode *current = head;
 
     printf("=======================================================\n");
     printf("                 DAFTAR MENFES MASUK                    \n");
@@ -248,7 +248,7 @@ void viewDecryptionKeyAndMessage(char nama_pengirimpesan[], Message *head, const
     printf("-------------------------------------------------------\n");
 
     while (current != NULL) {
-        printf("%-5d %-24s %-17s\n", current->id, current->timestamp, current->nama_pengirim);
+        printf("%-5d %-24s %-17s\n", current->id_pesan, current->timestamp, current->nama_pengirimpesan);
         current = current->next;
     }
 
@@ -258,21 +258,21 @@ void viewDecryptionKeyAndMessage(char nama_pengirimpesan[], Message *head, const
 
     current = head;
     while (current != NULL) {
-        if (current->id == chosenId) {
+        if (current->id_pesan == chosenId) {
             // Logika dekripsi seperti sebelumnya
             char decryptedMsg[100];
-                    int n = sqrt(strlen(current->key)); // Asumsikan kunci adalah matriks persegi
-                    char key_matrix[MAX][MAX];
-                    int key_matrix_num[MAX][MAX];
-                    int i, j;
+                        char key_matrix[MAX][MAX];
+            int key_matrix_num[MAX][MAX];
+            int n, i, j;
             // Proses dekripsi berdasarkan method
-            switch (current->method) {
-                case 1:
-                    decryptRailFence(current->encryptedMsg, atoi(current->key), decryptedMsg);
+            switch (current->type) {
+                case RAILFENCE:
+                    decryptRailFence(current->ciphertext, current->cipher.railfence.keyangka, decryptedMsg);
                     break;
-                case 2:
-                    // Generate key matrix
-                    generateKeyMatrix(n, current->key, key_matrix);
+                case HILL:
+                   n = sqrt(strlen(current->cipher.hill.keyhuruf));
+                    // Ubah kunci menjadi matriks kunci
+                    generateKeyMatrix(n, current->cipher.hill.keyhuruf, key_matrix);
 
                     // Konversi matriks kunci menjadi angka (0-25)
                     for (i = 0; i < n; i++) {
@@ -304,16 +304,17 @@ void viewDecryptionKeyAndMessage(char nama_pengirimpesan[], Message *head, const
                         }
 
                         // Lakukan dekripsi menggunakan matriks kunci dan matriks invers
-                        decryptMessage(key_matrix_num, inverse, current->encryptedMsg, decryptedMsg, n);
-                    } else {
-                        printf("Matrix cannot be inverted\n");
+                        decryptMessage(key_matrix_num, inverse, current->ciphertext, decryptedMsg, n);
                     }
                     break;
-                case 3:
-                    decryptVernam(current->encryptedMsg, current->key, decryptedMsg);
+                case VERNAM:
+                    decryptVernam(current->ciphertext, current->cipher.vernam.keyhuruf, decryptedMsg);
                     break;
-                case 4:
-                    decryptVigenere(current->encryptedMsg, current->key, decryptedMsg);
+                case VIGENERE:
+                    decryptVigenere(current->ciphertext, current->cipher.vigenere.keyhuruf, decryptedMsg);
+                    break;
+                case RSA:
+                    // Logika dekripsi untuk method RSA
                     break;
                 default:
                     printf("Invalid decryption method.\n");
@@ -321,7 +322,7 @@ void viewDecryptionKeyAndMessage(char nama_pengirimpesan[], Message *head, const
             }
 
             displayDecryptedMessage(decryptedMsg);
-            markMessageAsRead(head, chosenId); // Tandai pesan sebagai sudah dibaca
+            current->status = 1; // Tandai pesan sebagai sudah dibaca
             saveMessagesToFile(filename, head); // Simpan status baru ke file
             break;
         }
@@ -333,55 +334,104 @@ void viewDecryptionKeyAndMessage(char nama_pengirimpesan[], Message *head, const
     }
 }
 
-
 // Fungsi untuk membuat node baru
-Message* createMessage(int status, int id, const char *timestamp, const char *nama_target, const char *nama_pengirim, int method, const char *key, int n, const char *encryptedMsg) {
-    Message *newMessage = (Message *)malloc(sizeof(Message));
+MessageNode* createMessageNode(int status, int id_pesan, const char *timestamp, const char *nama_target, const char *nama_pengirimpesan, CipherType type, const char *key1, const char *key2, const char *ciphertext) {
+    MessageNode *newMessage = (MessageNode *)malloc(sizeof(MessageNode));
+    if (newMessage == NULL) {
+        return NULL; // Gagal mengalokasikan memori
+    }
+
     newMessage->status = status;
-    newMessage->id = id;
+    newMessage->id_pesan = id_pesan;
     strcpy(newMessage->timestamp, timestamp);
     strcpy(newMessage->nama_target, nama_target);
-    strcpy(newMessage->nama_pengirim, nama_pengirim);
-    newMessage->method = method;
-    strcpy(newMessage->key, key);
-    newMessage->n = n;
-    strcpy(newMessage->encryptedMsg, encryptedMsg);
+    strcpy(newMessage->nama_pengirimpesan, nama_pengirimpesan);
+    strcpy(newMessage->ciphertext, ciphertext);
+    newMessage->type = type;
+
+    switch (type) {
+        case RAILFENCE:
+            newMessage->cipher.railfence.keyangka = atoi(key1);
+            break;
+        case HILL:
+            newMessage->cipher.hill.n2 = atoi(key1);
+            strcpy(newMessage->cipher.hill.keyhuruf, key2);
+            break;
+        case VERNAM:
+            strcpy(newMessage->cipher.vernam.keyhuruf, key1);
+            break;
+        case VIGENERE:
+            strcpy(newMessage->cipher.vigenere.keyhuruf, key1);
+            break;
+        case RSA:
+            newMessage->cipher.rsa.p = atoi(key1);
+            newMessage->cipher.rsa.q = atoi(key2);
+            break;
+        default:
+            // Penanganan untuk jenis enkripsi lainnya jika diperlukan
+            break;
+    }
+
     newMessage->next = NULL;
     return newMessage;
 }
-
-Message* loadMessagesFromFile(const char *filename) {
+MessageNode* loadMessagesFromFile(const char *filename) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
         return NULL;
     }
 
-    Message *head = NULL;
-    Message *tail = NULL;
+    MessageNode *head = NULL;
+    MessageNode *tail = NULL;
 
-    int status, id, method, n;
-    char timestamp[100], nama_target[50], nama_pengirim[100], key[100], encryptedMsg[100];
+    int id_pesan, type, status;
+    char timestamp[50], nama_target[50], nama_pengirimpesan[50], key1[50], key2[50], ciphertext[50];
+    char line[500]; // Deklarasi variabel line
 
-    while (fscanf(file, "%d, %d, %[^,], %[^,], %[^,], %d, %d, %[^,], %[^\n]",
-            &status, &id, timestamp, nama_target, nama_pengirim, &method, &n, key, encryptedMsg) == 9) {
-        Message *newMessage = createMessage(status, id, timestamp, nama_target, nama_pengirim, method, key, n, encryptedMsg);
+	while (fgets(line, sizeof(line), file) != NULL) {
+    int num_fields = sscanf(line, "%d, %d, %49[^,], %49[^,], %49[^,], %d, %49[^,], %49[^,], %49[^\n]",
+                            &status, &id_pesan, timestamp, nama_target, nama_pengirimpesan, &type, key1, key2, ciphertext);
 
-        if (head == NULL) {
-            head = newMessage;
-            tail = newMessage;
-        } else {
-            tail->next = newMessage;
-            tail = newMessage;
-        }
+    if (num_fields == 8) {
+        // Jika num_fields adalah 7, salin key2 ke ciphertext dan kosongkan key2
+        strcpy(ciphertext, key2);
+        key2[0] = '\0'; // Kosongkan key2
+    } else if (num_fields != 9) {
+        // Jika num_fields bukan 8, lanjutkan ke baris berikutnya
+        continue;
     }
+
+    // Pastikan ciphertext berisi data yang benar
+    if (strlen(ciphertext) == 0) {
+        // Jika ciphertext masih kosong, lanjutkan ke baris berikutnya
+        continue;
+    }
+
+    // Buat node pesan baru
+    MessageNode *newMessage = createMessageNode(status, id_pesan, timestamp, nama_target, nama_pengirimpesan, (CipherType)type, key1, key2, ciphertext);
+    if (newMessage == NULL) {
+        continue; // Lewati pesan yang tidak valid
+    }
+
+    // Tambahkan node pesan baru ke linked list
+    if (head == NULL) {
+        head = newMessage;
+        tail = newMessage;
+    } else {
+        tail->next = newMessage;
+        tail = newMessage;
+    }
+}
+
 
     fclose(file);
     return head;
 }
 
-int countUnreadMessages(Message *head) {
+// Fungsi untuk menghitung jumlah pesan yang belum dibaca
+int countUnreadMessages(MessageNode *head) {
     int count = 0;
-    Message *current = head;
+    MessageNode *current = head;
 
     while (current != NULL) {
         if (current->status == 0) {
@@ -392,11 +442,13 @@ int countUnreadMessages(Message *head) {
 
     return count;
 }
-void markMessageAsRead(Message *head, int messageId) {
-    Message *current = head;
+
+// Fungsi untuk menandai pesan sebagai sudah dibaca
+void markMessageAsRead(MessageNode *head, int messageId) {
+    MessageNode *current = head;
 
     while (current != NULL) {
-        if (current->id == messageId) {
+        if (current->id_pesan == messageId) {
             current->status = 1;
             break;
         }
@@ -404,26 +456,62 @@ void markMessageAsRead(Message *head, int messageId) {
     }
 }
 
-void saveMessagesToFile(const char *filename, Message *head) {
+void saveMessagesToFile(const char *filename, MessageNode *head) {
     FILE *file = fopen(filename, "w");
     if (file == NULL) {
         printf("File tidak dapat dibuka untuk menulis.\n");
         return;
     }
 
-    Message *current = head;
+    MessageNode *current = head;
 
     while (current != NULL) {
-        fprintf(file, "%d, %d, %s, %s, %s, %d, %d, %s, %s\n",
-                current->status, current->id, current->timestamp, current->nama_target, current->nama_pengirim, current->method, current->n, current->key, current->encryptedMsg);
+        switch (current->type) {
+            case RAILFENCE:
+                fprintf(file, "%d, %d, %s, %s, %s, %d, %d, %s",
+                        current->status, current->id_pesan, current->timestamp, current->nama_target, current->nama_pengirimpesan,
+                        current->type, current->cipher.railfence.keyangka, current->ciphertext);
+                break;
+            case HILL:
+                fprintf(file, "%d, %d, %s, %s, %s, %d, %d, %s, %s",
+                        current->status, current->id_pesan, current->timestamp, current->nama_target, current->nama_pengirimpesan,
+                        current->type, current->cipher.hill.n2, current->cipher.hill.keyhuruf, current->ciphertext);
+                break;
+            case VERNAM:
+                fprintf(file, "%d, %d, %s, %s, %s, %d, %s, %s",
+                        current->status, current->id_pesan, current->timestamp, current->nama_target, current->nama_pengirimpesan,
+                        current->type, current->cipher.vernam.keyhuruf, current->ciphertext);
+                break;
+            case VIGENERE:
+                fprintf(file, "%d, %d, %s, %s, %s, %d, %s, %s",
+                        current->status, current->id_pesan, current->timestamp, current->nama_target, current->nama_pengirimpesan,
+                        current->type, current->cipher.vigenere.keyhuruf, current->ciphertext);
+                break;
+            case RSA:
+                fprintf(file, "%d, %d, %s, %s, %s, %d, %d, %s",
+                        current->status, current->id_pesan, current->timestamp, current->nama_target, current->nama_pengirimpesan,
+                        current->type, current->cipher.rsa.p, current->cipher.rsa.q, current->ciphertext);
+                break;
+            default:
+                break;
+        }
+        
+        // Cek apakah current adalah node terakhir
+        if (current->next != NULL) {
+            fprintf(file, "\n");
+        }
+        
         current = current->next;
     }
 
     fclose(file);
 }
 
-void viewDecryptionKeyAndMessageUnRead(char nama_pengirimpesan[], Message *head, const char *filename) {
-    Message *current = head;
+
+
+
+void viewDecryptionKeyAndMessageUnRead(char nama_pengirimpesan[], MessageNode *head, const char *filename) {
+    MessageNode *current = head;
 
     printf("=======================================================\n");
     printf("                 DAFTAR MENFES BELUM DIBACA            \n");
@@ -434,7 +522,7 @@ void viewDecryptionKeyAndMessageUnRead(char nama_pengirimpesan[], Message *head,
     while (current != NULL) {
         // Hanya menampilkan pesan dengan status 0 (belum dibaca)
         if (current->status == 0) {
-            printf("%-5d %-24s %-17s\n", current->id, current->timestamp, current->nama_pengirim);
+            printf("%-5d %-24s %-17s\n", current->id_pesan, current->timestamp, current->nama_pengirimpesan);
         }
         current = current->next;
     }
@@ -445,21 +533,63 @@ void viewDecryptionKeyAndMessageUnRead(char nama_pengirimpesan[], Message *head,
 
     current = head;
     while (current != NULL) {
-        if (current->id == chosenId && current->status == 0) {
-            char decryptedMsg[100];
+        if (current->id_pesan == chosenId && current->status == 0) {
+            char decryptedMsg[300];
+            // Inisialisasi matriks kunci
+            char key_matrix[MAX][MAX];
+            int key_matrix_num[MAX][MAX];
+            int n, i, j;
             // Proses dekripsi berdasarkan method
-            switch (current->method) {
-                case 1:
-                    decryptRailFence(current->encryptedMsg, atoi(current->key), decryptedMsg);
+            switch (current->type) {
+                case RAILFENCE:
+                    decryptRailFence(current->ciphertext, current->cipher.railfence.keyangka, decryptedMsg);
                     break;
-                case 2:
-                    // Logika dekripsi untuk method 2
+                case HILL:
+                    n = sqrt(strlen(current->cipher.hill.keyhuruf));
+                    // Ubah kunci menjadi matriks kunci
+                    generateKeyMatrix(n, current->cipher.hill.keyhuruf, key_matrix);
+
+                    // Konversi matriks kunci menjadi angka (0-25)
+                    for (i = 0; i < n; i++) {
+                        for (j = 0; j < n; j++) {
+                            key_matrix_num[i][j] = key_matrix[i][j] - 'a';
+                        }
+                    }
+
+                    // Hitung determinan matriks kunci
+                    int det = determinant(key_matrix_num, n);
+
+                    // Jika determinan tidak nol, lanjutkan proses dekripsi
+                    if (det != 0) {
+                        int adj[MAX][MAX];
+                        adjoint(key_matrix_num, adj, n);
+
+                        // Hitung invers determinan
+                        int det_inv = modInverse(det, 26);
+
+                        // Hitung matriks invers
+                        int inverse[MAX][MAX];
+                        for (i = 0; i < n; i++) {
+                            for (j = 0; j < n; j++) {
+                                inverse[i][j] = ((adj[i][j] % 26) * det_inv) % 26;
+                                if (inverse[i][j] < 0) {
+                                    inverse[i][j] += 26;
+                                }
+                            }
+                        }
+
+                        // Lakukan dekripsi menggunakan matriks kunci dan matriks invers
+                        decryptMessage(key_matrix_num, inverse, current->ciphertext, decryptedMsg, n);
+                    }
                     break;
-                case 3:
-                    decryptVernam(current->encryptedMsg, current->key, decryptedMsg);
+                case VERNAM:
+                    decryptVernam(current->ciphertext, current->cipher.vernam.keyhuruf, decryptedMsg);
                     break;
-                case 4:
-                    decryptVigenere(current->encryptedMsg, current->key, decryptedMsg);
+                case VIGENERE:
+                    decryptVigenere(current->ciphertext, current->cipher.vigenere.keyhuruf, decryptedMsg);
+                    break;
+                case RSA:
+                    // Logika dekripsi untuk method RSA
                     break;
                 default:
                     printf("Invalid decryption method.\n");
@@ -467,7 +597,7 @@ void viewDecryptionKeyAndMessageUnRead(char nama_pengirimpesan[], Message *head,
             }
 
             displayDecryptedMessage(decryptedMsg);
-            markMessageAsRead(head, chosenId); // Tandai pesan sebagai sudah dibaca
+            current->status = 1; // Tandai pesan sebagai sudah dibaca
             saveMessagesToFile(filename, head); // Simpan status baru ke file
             break;
         }
@@ -478,7 +608,6 @@ void viewDecryptionKeyAndMessageUnRead(char nama_pengirimpesan[], Message *head,
         printf("Pesan dengan ID %d tidak ditemukan atau sudah dibaca.\n\n", chosenId);
     }
 }
-
 
 void clearScreen() {
     system("cls"); // Bersihkan layar konsol
