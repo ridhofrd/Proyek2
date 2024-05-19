@@ -82,16 +82,16 @@ void viewLastDayMessages(struct Queue *q) {
     for (i = q->front; i != (q->rear + 1) % MAX_QUEUE_SIZE; i = (i + 1) % MAX_QUEUE_SIZE) {
         struct Message msg = q->messages[i];
         if (strcmp(msg.date, today) == 0) {
-            if (strcmp(msg.message, "2") == 0 || strcmp(msg.message, "5") == 0) {
+            if (strcmp(msg.method, "2") == 0 || strcmp(msg.method, "5") == 0) {
                 // Jika metodenya adalah 2 atau 5, langsung tampilkan pesan terenkripsi
-                printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", msg.id, msg.date, msg.from, msg.to, msg.message);
+                printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", msg.id, msg.date, msg.to, msg.from, msg.message);
             } else {
                 // Jika bukan metode 2 atau 5, cek koma dan tampilkan pesan setelah koma sebagai pesan terenkripsi
                 char *comma_position = strchr(msg.message, ',');
                 if (comma_position != NULL) {
-                    printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", msg.id, msg.date, msg.from, msg.to, comma_position + 2); // Tampilkan pesan setelah koma
+                    printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", msg.id, msg.date, msg.to, msg.from, comma_position + 2); // Tampilkan pesan setelah koma
                 } else {
-                    printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", msg.id, msg.date, msg.from, msg.to, msg.message);
+                    printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", msg.id, msg.date, msg.to, msg.from, msg.message);
                 }
             }
             found = 1;
@@ -107,26 +107,26 @@ void viewAllMenfess(FILE *file) {
     printf("------------------------------------------------------------------------------------------------------\n");
     printf("                                       DAFTAR SELURUH MENFESS                                         \n");
     printf("------------------------------------------------------------------------------------------------------\n");
-	rewind(file);
+    rewind(file);
 
-    int id;
+    int dummy, id;
     char date[100], from[100], to[100], message[100], method[100], key[100];
 
-	printf("-------------------------------------------------------------------------------------------------------\n");
-	printf("|ID |            Waktu Kirim        |     Untuk      |      Dari      |      Pesan Ter-Enkripsi       |\n");
-	printf("|---|-------------------------------|----------------|----------------|-------------------------------|\n");
+    printf("-------------------------------------------------------------------------------------------------------\n");
+    printf("|ID |            Waktu Kirim        |     Untuk      |      Dari      |      Pesan Ter-Enkripsi       |\n");
+    printf("|---|-------------------------------|----------------|----------------|-------------------------------|\n");
 
-    while (fscanf(file, "%d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &id, date, from, to, method, key, message) != EOF) {
+    while (fscanf(file, "%d, %d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &dummy, &id, date, to, from, method, key, message) != EOF) {
         if (strcmp(method, "2") == 0 || strcmp(method, "5") == 0) {
             // Cek jika metode adalah 2 atau 5, maka tampilkan pesan setelah koma
             char *comma_position = strchr(message, ',');
             if (comma_position != NULL) {
-                printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", id, date, from, to, comma_position + 2); // Tampilkan pesan setelah koma
+                printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", id, date, to, from, comma_position + 2); // Tampilkan pesan setelah koma
             } else {
-                printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", id, date, from, to, message);
+                printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", id, date, to, from, message);
             }
         } else {
-            printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", id, date, from, to, message);
+            printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", id, date, to, from, message);
         }
     }
 }
@@ -135,32 +135,32 @@ void searchRecipient(FILE *file) {
     printf("----------------------------------------------------------------------------------------------------\n");
     printf("                                    CARI BERDASARKAN PENERIMA                                       \n");
     printf("----------------------------------------------------------------------------------------------------\n");
-	char recipient[100];
+    char recipient[100];
     printf("Masukkan nama penerima yang ingin Anda cari: ");
     scanf("%s", recipient);
 
     rewind(file);
 
-    int id;
+    int dummy, id;
     char date[100], from[100], to[100], message[100], method[100], key[100];
     int found = 0;
 
-	printf("-------------------------------------------------------------------------------------------------------\n");
-	printf("|ID |            Waktu Kirim        |     Untuk      |      Dari      |       Pesan Ter-enkripsi      |\n");
-	printf("|---|-------------------------------|----------------|----------------|-------------------------------|\n");
+    printf("-------------------------------------------------------------------------------------------------------\n");
+    printf("|ID |            Waktu Kirim        |     Untuk      |      Dari      |       Pesan Ter-enkripsi      |\n");
+    printf("|---|-------------------------------|----------------|----------------|-------------------------------|\n");
 
-    while (fscanf(file, "%d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &id, date, from, to, method, key, message) != EOF) {
+    while (fscanf(file, "%d, %d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &dummy, &id, date, to, from, method, key, message) != EOF) {
         if (strcmp(to, recipient) == 0) {
             if (strcmp(method, "2") == 0 || strcmp(method, "5") == 0) {
                 // Cek jika metode adalah 2 atau 5, maka tampilkan pesan setelah koma
                 char *comma_position = strchr(message, ',');
                 if (comma_position != NULL) {
-                    printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", id, date, from, to, comma_position + 2); // Tampilkan pesan setelah koma
+                    printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", id, date, to, from, comma_position + 2); // Tampilkan pesan setelah koma
                 } else {
-                    printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", id, date, from, to, message);
+                    printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", id, date, to, from, message);
                 }
             } else {
-                printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", id, date, from, to, message);
+                printf("|%-2d |%-30s |%-15s |%-15s |%-30s |\n", id, date, to, from, message);
             }
             found = 1;
         }
@@ -175,7 +175,7 @@ void viewStatistics(struct UserStats userStats[], int numUsers) {
     printf("----------------------------------------------------------------------------------------------------\n");
     printf("                                          STATISTIK                                                \n");
     printf("----------------------------------------------------------------------------------------------------\n");
-	int i, maxMessageCount = 0;
+    int i, maxMessageCount = 0;
     char maxUser[100];
     for (i = 0; i < numUsers; i++) {
         if (userStats[i].messageCount > maxMessageCount) {
@@ -208,11 +208,11 @@ int main() {
     struct Queue messageQueue;
     initializeQueue(&messageQueue);
 
-    int id;
+    int dummy, id;
     char date[100], from[100], to[100], message[100], method[100], key[100];
 
     // Hitung statistik untuk setiap pengguna dan tambahkan pesan ke dalam queue
-    while (fscanf(file, "%d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &id, date, from, to, method, key, message) != EOF) {
+    while (fscanf(file, "%d, %d, %[^,], %[^,], %[^,], %[^,], %[^,], %[^\n]", &dummy, &id, date, to, from, method, key, message) != EOF) {
         // Hitung statistik untuk pengguna
         int userIndex = -1;
         for (i = 0; i < numUsers; i++) {
@@ -276,4 +276,3 @@ int main() {
     fclose(file);
     return 0;
 }
-
