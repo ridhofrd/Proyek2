@@ -18,6 +18,7 @@ typedef enum {
 
 //struct untuk linked list pesan sebelum disimpan ke file
 typedef struct {
+    int status;
     int id_pesan;
     char timestamp[50];
     char nama_target[50];

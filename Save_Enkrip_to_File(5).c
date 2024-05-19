@@ -15,6 +15,7 @@ long int p, q, n, t, flag, e[100], d[100], temp[100], j, m[100], en[100];
 //char msg[100];
 char timestamp[20];
 
+int idplus;
 int prime(long int);
 void ce();
 long int cd(long int);
@@ -120,6 +121,13 @@ int processOption(int jumlahMember, Member *members, char username[]) {
         case 1:
             // Handle option 1: Kirim pesan
             printMembers(members, jumlahMember, username);
+
+            //penyesuaian id file dengan linked list
+            if (isMessageListEmpty()) {
+                idplus=0;
+            } else {
+                idplus+=1;
+            }
 
             int targetID;
             printf("\nMasukkan nomor id tujuan yang ingin anda buatkan menfess : ");
@@ -280,11 +288,12 @@ int getLastMessageId(char filename[]) {	// Function to read the last used messag
     int lastId = 0;
 
     if (file != NULL) {
+        int idstatus;
         int id;
         char line[100];  // Assuming a reasonable maximum line length
 
         while (fgets(line, sizeof(line), file) != NULL) {
-            sscanf(line, "%d", &id);
+            sscanf(line,"%d, %d", &idstatus, &id);
             lastId = id; // Update lastId for each line until the end of the file
         }
 
@@ -706,23 +715,23 @@ void saveMessagesToFileRecursive(MessageNode *current, FILE *file) {
     // Menyimpan data ke file saat kembali dari rekursi
     switch (current->type) {
         case RAILFENCE:
-            fprintf(file, "%d, %s, %s, %s, 1, %d, %s\n",
+            fprintf(file, "0, %d, %s, %s, %s, 1, %d, %s\n",
                     current->id_pesan, current->timestamp, current->nama_target, current->nama_pengirimpesan, current->cipher.railfence.keyangka, current->ciphertext);
             break;
         case HILL:
-            fprintf(file, "%d, %s, %s, %s, 2, %d, %s, %s\n",
+            fprintf(file, "0, %d, %s, %s, %s, 2, %d, %s, %s\n",
                     current->id_pesan, current->timestamp, current->nama_target, current->nama_pengirimpesan, current->cipher.hill.n2, current->cipher.hill.keyhuruf, current->ciphertext);
             break;
         case VERNAM:
-            fprintf(file, "%d, %s, %s, %s, 3, %s, %s\n",
+            fprintf(file, "0, %d, %s, %s, %s, 3, %s, %s\n",
                     current->id_pesan, current->timestamp, current->nama_target, current->nama_pengirimpesan, current->cipher.vernam.keyhuruf, current->ciphertext);
             break;
         case VIGENERE:
-            fprintf(file, "%d, %s, %s, %s, 4, %s, %s\n",
+            fprintf(file, "0, %d, %s, %s, %s, 4, %s, %s\n",
                     current->id_pesan, current->timestamp, current->nama_target, current->nama_pengirimpesan, current->cipher.vigenere.keyhuruf, current->ciphertext);
             break;
         case RSA:
-            fprintf(file, "%d, %s, %s, %s, 5, %d, %d, %s\n",
+            fprintf(file, "0, %d, %s, %s, %s, 5, %d, %d, %s\n",
                     current->id_pesan, current->timestamp, current->nama_target, current->nama_pengirimpesan, current->cipher.rsa.p, current->cipher.rsa.q, current->ciphertext);
             break;
     }
@@ -809,9 +818,10 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 
 
             //simpan pesan ke linked list
-            id_pesan = generateUniqueId("DataMenfess.txt");
+            id_pesan = generateUniqueId("DataMenfess.txt") + idplus;
             getCurrentTimestamp(timestamp);
 
+            newNode->status = 0;
             newNode->id_pesan = id_pesan;
             strcpy(newNode->timestamp, timestamp);
             strcpy(newNode->nama_target, nama_target);
@@ -823,40 +833,6 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 
             addMessageToList(newNode);
 
-            //simpan ke file
-            sprintf(filename, "%s.txt", nama_target);
-            id_pesan = generateUniqueId(filename);
-
-            // Check if the file already exists
-            if ((file = fopen(filename, "a")) != NULL) {
-            	getCurrentTimestamp(timestamp);
-                fprintf(file, "%d, %s, %s, %s, 1, %d, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, keyangka);
-
-                // Use fwrite to write encryptedMsg as binary data
-                fwrite(encryptedMsg, sizeof(char), msgLen, file);
-                fprintf(file, "\n");
-
-                fclose(file);
-            } else {
-                printf("Error creating or opening file.\n");
-                return;
-            }
-
-            // Simpan juga ke file DataMenfess.txt
-		    if ((file = fopen("DataMenfess.txt", "a")) != NULL) {
-            	id_pesan = generateUniqueId("DataMenfess.txt");
-				fprintf(file, "%d, %s, %s, %s, 1, %d, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, keyangka);
-		        // Use fwrite to write encryptedMsg as binary data
-		        fwrite(encryptedMsg, sizeof(char), msgLen, file);
-		        fprintf(file, "\n");
-
-		        fclose(file);
-		    } else {
-		        printf("Error creating or opening DataMenfess.txt.\n");
-		        return;
-		    }
-
-            printf("Message successfully encrypted and saved to file.\n");
             break;
         case 2:  //hill cipher
 			;
@@ -925,9 +901,10 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 
 
             //simpan pesan ke linked list
-            id_pesan = generateUniqueId("DataMenfess.txt");
+            id_pesan = generateUniqueId("DataMenfess.txt") + idplus;
             getCurrentTimestamp(timestamp);
 
+            newNode->status = 0;
             newNode->id_pesan = id_pesan;
             strcpy(newNode->timestamp, timestamp);
             strcpy(newNode->nama_target, nama_target);
@@ -939,44 +916,6 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
             newNode->next = NULL;
 
             addMessageToList(newNode);
-
-
-			//simpan ke file
-			sprintf(filename, "%s.txt", nama_target);
-            id_pesan = generateUniqueId(filename);
-
-            // Check if the file already exists
-            if ((file = fopen(filename, "a")) != NULL) {
-		    	getCurrentTimestamp(timestamp);
-                fprintf(file, "%d, %s, %s, %s, 2, %d, %s, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, n2, keyhuruf);
-
-                // Use fwrite to write encryptedMsg as binary data
-                fwrite(encryptedMsg, sizeof(char), msgLen, file);
-                fprintf(file, "\n");
-
-                fclose(file);
-            } else {
-                printf("Error creating or opening file.\n");
-                return;
-            }
-
-            // Simpan juga ke file DataMenfess.txt
-		    if ((file = fopen("DataMenfess.txt", "a")) != NULL) {
-            	id_pesan = generateUniqueId("DataMenfess.txt");
-		        fprintf(file, "%d, %s, %s, %s, 2, %d, %s, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, n2, keyhuruf);
-
-		        // Use fwrite to write encryptedMsg as binary data
-		        fwrite(encryptedMsg, sizeof(char), msgLen, file);
-		        fprintf(file, "\n");
-
-		        fclose(file);
-		    } else {
-		        printf("Error creating or opening DataMenfess.txt.\n");
-		        return;
-		    }
-
-
-            printf("Message successfully encrypted and saved to file.\n");
 
             break;
         case 3:  //vernam cipher
@@ -1006,9 +945,10 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 
 
             //simpan pesan ke linked list
-            id_pesan = generateUniqueId("DataMenfess.txt");
+            id_pesan = generateUniqueId("DataMenfess.txt") + idplus;
             getCurrentTimestamp(timestamp);
 
+            newNode->status = 0;
             newNode->id_pesan = id_pesan;
             strcpy(newNode->timestamp, timestamp);
             strcpy(newNode->nama_target, nama_target);
@@ -1020,43 +960,6 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 
             addMessageToList(newNode);
 
-
-		    //simpan ke file
-			sprintf(filename, "%s.txt", nama_target);
-            id_pesan = generateUniqueId(filename);
-
-            // Check if the file already exists
-            if ((file = fopen(filename, "a")) != NULL) {
-            	getCurrentTimestamp(timestamp);
-                fprintf(file, "%d, %s, %s, %s, 3, %s, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, keyhuruf);
-
-                // Use fwrite to write encryptedMsg as binary data
-                fwrite(encryptedMsg, sizeof(char), msgLen, file);
-                fprintf(file, "\n");
-
-                fclose(file);
-            } else {
-                printf("Error creating or opening file.\n");
-                return;
-            }
-
-            // Simpan juga ke file DataMenfess.txt
-		    if ((file = fopen("DataMenfess.txt", "a")) != NULL) {
-            	id_pesan = generateUniqueId("DataMenfess.txt");
-		        fprintf(file, "%d, %s, %s, %s, 3, %s, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, keyhuruf);
-
-		        // Use fwrite to write encryptedMsg as binary data
-		        fwrite(encryptedMsg, sizeof(char), msgLen, file);
-		        fprintf(file, "\n");
-
-		        fclose(file);
-		    } else {
-		        printf("Error creating or opening DataMenfess.txt.\n");
-		        return;
-		    }
-
-            printf("Message successfully encrypted and saved to file.\n");
-
             break;
         case 4:  //vigenere
             printf("Enter the encryption key (berupa huruf): ");
@@ -1067,9 +970,10 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 
 
             //simpan pesan ke linked list
-            id_pesan = generateUniqueId("DataMenfess.txt");
+            id_pesan = generateUniqueId("DataMenfess.txt") + idplus;
             getCurrentTimestamp(timestamp);
 
+            newNode->status = 0;
             newNode->id_pesan = id_pesan;
             strcpy(newNode->timestamp, timestamp);
             strcpy(newNode->nama_target, nama_target);
@@ -1081,41 +985,6 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
 
             addMessageToList(newNode);
 
-            //simpan ke file
-            sprintf(filename, "%s.txt", nama_target);
-            id_pesan = generateUniqueId(filename);
-
-            // Check if the file already exists
-            if ((file = fopen(filename, "a")) != NULL) {
-                getCurrentTimestamp(timestamp);
-                fprintf(file, "%d, %s, %s, %s, 4, %s, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, keyhuruf);
-
-                // Use fwrite to write encryptedMsg as binary data
-                fwrite(encryptedMsg, sizeof(char), msgLen, file);
-                fprintf(file, "\n");
-
-                fclose(file);
-            } else {
-                printf("Error creating or opening file.\n");
-                return;
-            }
-
-            // Simpan juga ke file DataMenfess.txt
-		    if ((file = fopen("DataMenfess.txt", "a")) != NULL) {
-            	id_pesan = generateUniqueId("DataMenfess.txt");
-		        fprintf(file, "%d, %s, %s, %s, 4, %s, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, keyhuruf);
-
-		        // Use fwrite to write encryptedMsg as binary data
-		        fwrite(encryptedMsg, sizeof(char), msgLen, file);
-		        fprintf(file, "\n");
-
-		        fclose(file);
-		    } else {
-		        printf("Error creating or opening DataMenfess.txt.\n");
-		        return;
-		    }
-
-            printf("Message successfully encrypted and saved to file.\n");
             break;
         case 5:
             ;  //RSA
@@ -1190,9 +1059,10 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
             printf("%s\n", RSAEncryptedMsg);
 
             //simpan pesan ke linked list
-            id_pesan = generateUniqueId("DataMenfess.txt");
+            id_pesan = generateUniqueId("DataMenfess.txt") + idplus;
             getCurrentTimestamp(timestamp);
 
+            newNode->status = 0;
             newNode->id_pesan = id_pesan;
             strcpy(newNode->timestamp, timestamp);
             strcpy(newNode->nama_target, nama_target);
@@ -1204,44 +1074,6 @@ void saveEncryptedMessageToFile(char nama_target[], char nama_pengirimpesan[], c
             newNode->next = NULL;
 
             addMessageToList(newNode);
-
-
-                   //simpan ke file
-                   sprintf(filename, "%s.txt", nama_target);
-                   if ((file = fopen(filename, "a")) != NULL) {
-                        getCurrentTimestamp(timestamp);
-                        id_pesan = generateUniqueId(filename);
-                        fprintf(file, "%d, %s, %s, %s, 5, %d, %d, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, p, q);
-
-                        // Use fwrite to write encryptedMsg as binary data
-                        fwrite(RSAEncryptedMsg, sizeof(char), msgLen, file);
-                        fprintf(file, "\n");
-
-                        fclose(file);
-                    } else {
-                        printf("Error creating or opening file.\n");
-                        return;
-                    }
-
-                    // Simpan juga ke file DataMenfess.txt
-                    if ((file = fopen("DataMenfess.txt", "a")) != NULL) {
-                        getCurrentTimestamp(timestamp);
-                        id_pesan = generateUniqueId("DataMenfess.txt");
-                        fprintf(file, "%d, %s, %s, %s, 5, %d, %d, ", id_pesan, timestamp, nama_target, nama_pengirimpesan, p, q);
-                        // Use fwrite to write encryptedMsg as binary data
-                        fwrite(RSAEncryptedMsg, sizeof(char), msgLen, file);
-                        fprintf(file, "\n");
-
-                        fclose(file);
-                    } else {
-                        printf("Error creating or opening DataMenfess.txt.\n");
-                        return;
-                    }
-
-                    printf("Message successfully encrypted and saved to file.\n");
-
-
-            // Check if the file already exists
 
             break;
 
