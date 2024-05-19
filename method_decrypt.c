@@ -1,7 +1,9 @@
 /* File		 : method_decrypt.c							*/
 /* Deskripsi : Unit untuk keperluan ADT Decrypt_Method	*/
 
-#include "decrypt.h"
+//#include "decrypt.h"
+#define MAX 100
+#include <stdio.h>
 
 /****** START METHOD DEKRIPSI RAIL FENCE ******/
 void decryptRailFence(char encryptedMsg[], int key, char decryptedMsg[]) {

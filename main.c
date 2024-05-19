@@ -32,9 +32,8 @@ int main()
                     int userStatus;
                     inputCredentials(&username, &password);
                     printf("%s", password);
-                    encrypted_password = encryptPassword(password);
-                    authStatusCode = checkCredentials(username, encrypted_password, authRole);
-                    
+                    authStatusCode = checkCredentials(username, password, authRole);
+
                         if(authStatusCode == 2){
                             system("cls");
 
@@ -104,8 +103,7 @@ int main()
                                 inputDetail(NIM, kelas);
                                 mainCreateFile(username);
                                 statusRegister = 1;
-                                encrypted_password = encryptPassword(password);
-                                addMhs(username, encrypted_password, NIM, kelas);
+                                addMhs(username, password, NIM, kelas);
                             }
                         }
                         else{
