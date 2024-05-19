@@ -50,7 +50,46 @@ typedef struct MessageNode {
     } cipher;
     struct MessageNode *next;
 } MessageNode;
+// Define the NodeBinary structure
+typedef struct NodeBinary {
+    int status;
+    int id_pesan;
+    char timestamp[50];
+    char nama_target[50];
+    char nama_pengirimpesan[50];
+    CipherType type;
+    char key1[50];
+    char key2[50];
+    char ciphertext[50];
+    struct NodeBinary *left;
+    struct NodeBinary *right;
+} NodeBinary;
 
+// Function to create a new message node
+NodeBinary* createNodeBinary(int status, int id_pesan, const char *timestamp, const char *nama_target,
+                             const char *nama_pengirimpesan, CipherType type, const char *key1, const char *key2, const char *ciphertext);
+
+// Function to insert a message node into the binary search tree
+NodeBinary* insertNodeBinary(NodeBinary *root, NodeBinary *newNode);
+
+// Function to load messages from a file
+NodeBinary* loadBinaryMessagesFromFile(const char *filename);
+
+// Function to save messages to a file
+void saveBinaryMessagesToFile(const char *filename, NodeBinary *root);
+
+// Helper function to recursively save messages to a file
+void saveBinaryMessagesHelper(FILE *file, NodeBinary *node);
+
+// Function to print messages in-order (ascending by ID)
+void printMessages(NodeBinary *root, const char *filename);
+void processMessages(NodeBinary *root, const char *filename);
+
+// Function to find the node with the minimum value (leftmost) in a subtree
+NodeBinary* minValueNode(NodeBinary *node);
+
+// Function to delete a message node from the binary search tree based on ID
+NodeBinary* deleteNodeBinary(NodeBinary *root, int id);
 // Declare functions
 void decryptRailFence(char encryptedMsg[], int key, char decryptedMsg[]);
 void decryptVigenere(const char *encryptedMsg, const char *key, char *decryptedMsg);
