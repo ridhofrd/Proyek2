@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "decrypt.h"
+//#include "decrypt.h"
 
 /****** START ADD ON MENU DEKRIPSI ******/
 int mainOpsi3(char *username) {

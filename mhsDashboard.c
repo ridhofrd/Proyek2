@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include"modul.h"
+//#include"modul.h"
 
 int mhsMenu(){
 	/** kamus data **/

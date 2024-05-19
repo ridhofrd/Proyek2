@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "modul.h"
+//#include "modul.h"
 
 #define TEXT_MAX 100
 

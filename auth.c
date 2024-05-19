@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include <conio.h>
 
-#include "modul.h"
+//#include "modul.h"
 
 #define CHAR_MAX_SIZE 100
 #define NIM_MAX 100
