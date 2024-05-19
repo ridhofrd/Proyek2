@@ -13,7 +13,7 @@ int main(char *username[]) {
     char filename[100];
     sprintf(filename, "%s.txt", username);
 
-    Message *messageList = loadMessagesFromFile(filename);
+    MessageNode *messageList = loadMessagesFromFile(filename);
     if (messageList == NULL) {
         printf("Tidak ada pesan yang dapat dimuat.\n");
         return 1;
